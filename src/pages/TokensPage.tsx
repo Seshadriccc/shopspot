@@ -34,12 +34,11 @@ const TokensPage = () => {
       try {
         setLoading(true);
         
+        // Using a more generic query approach that's less dependent on type definitions
         const { data, error } = await supabase
           .from('user_tokens')
           .select(`
-            id,
-            vendor_id,
-            token_count,
+            *,
             vendors:vendor_id (
               shop_name,
               category,
@@ -50,8 +49,8 @@ const TokensPage = () => {
           
         if (error) throw error;
         
-        // Format the data
-        const formattedTokens = data.map(item => ({
+        // Format the data - using type assertion since we know the structure
+        const formattedTokens = data.map((item: any) => ({
           id: item.id,
           vendor_id: item.vendor_id,
           token_count: item.token_count,

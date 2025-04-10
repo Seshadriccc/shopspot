@@ -37,12 +37,13 @@ const TokenRequestDialog = ({ isOpen, onClose, shop }: TokenRequestDialogProps) 
       const mockVendorId = shop.id;
       
       // Check if this user already has tokens from this vendor
+      // Using a more generic approach that doesn't rely on specific type definitions
       const { data: existingTokens, error: checkError } = await supabase
         .from('user_tokens')
-        .select('id, token_count')
+        .select('*')
         .eq('user_id', user.id)
         .eq('vendor_id', mockVendorId)
-        .single();
+        .maybeSingle();
       
       if (checkError && checkError.code !== 'PGRST116') {
         throw checkError;
@@ -50,9 +51,9 @@ const TokenRequestDialog = ({ isOpen, onClose, shop }: TokenRequestDialogProps) 
       
       if (existingTokens) {
         // User already has tokens, update the count (max 3)
-        const newCount = Math.min(existingTokens.token_count + 1, 3);
+        const newCount = Math.min((existingTokens as any).token_count + 1, 3);
         
-        if (newCount === existingTokens.token_count) {
+        if (newCount === (existingTokens as any).token_count) {
           toast({
             title: "Token Limit Reached",
             description: "You've already reached the maximum of 3 tokens from this shop",
@@ -64,7 +65,7 @@ const TokenRequestDialog = ({ isOpen, onClose, shop }: TokenRequestDialogProps) 
         const { error: updateError } = await supabase
           .from('user_tokens')
           .update({ token_count: newCount })
-          .eq('id', existingTokens.id);
+          .eq('id', (existingTokens as any).id);
           
         if (updateError) throw updateError;
       } else {
@@ -75,7 +76,7 @@ const TokenRequestDialog = ({ isOpen, onClose, shop }: TokenRequestDialogProps) 
             user_id: user.id,
             vendor_id: mockVendorId,
             token_count: 1
-          });
+          } as any);
           
         if (insertError) throw insertError;
       }
