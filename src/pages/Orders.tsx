@@ -101,8 +101,10 @@ const Orders = () => {
             
           if (itemsError) throw itemsError;
           
+          // Transform to match our OrderData interface
           return {
             ...order,
+            vendor: { shop_name: order.vendors.shop_name }, // Map vendors to vendor
             items: (items || []).map(item => ({
               id: item.id,
               product_name: item.products?.name || 'Unknown Product',

@@ -131,7 +131,8 @@ const BecomeVendor = () => {
         description: "Your shop has been registered. You're now in free trial mode!",
       });
 
-      // Create initial subscription record
+      // Create initial subscription record - Converting Date to ISO string for Supabase
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
       const { error: subscriptionError } = await supabase
         .from('subscriptions')
         .insert({
@@ -139,7 +140,7 @@ const BecomeVendor = () => {
           plan_type: 'free_trial',
           amount: 0,
           status: 'active',
-          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+          expires_at: expiresAt.toISOString(), // Convert Date to string
         });
 
       if (subscriptionError) throw subscriptionError;
@@ -229,11 +230,14 @@ const BecomeVendor = () => {
                     <FormItem>
                       <FormLabel>Shop Name</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="My Awesome Shop" 
-                          {...field} 
-                          icon={<Building className="w-4 h-4 text-gray-500" />}
-                        />
+                        <div className="flex items-center relative">
+                          <Building className="w-4 h-4 absolute left-3 text-gray-500" />
+                          <Input
+                            placeholder="My Awesome Shop"
+                            className="pl-10" 
+                            {...field}
+                          />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -294,11 +298,14 @@ const BecomeVendor = () => {
                   <FormItem>
                     <FormLabel>Shop Address</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="123 Main St, New York, NY 10001" 
-                        {...field} 
-                        icon={<MapPin className="w-4 h-4 text-gray-500" />}
-                      />
+                      <div className="flex items-center relative">
+                        <MapPin className="w-4 h-4 absolute left-3 text-gray-500" />
+                        <Input 
+                          placeholder="123 Main St, New York, NY 10001"
+                          className="pl-10" 
+                          {...field}
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
