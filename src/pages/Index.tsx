@@ -5,14 +5,18 @@ import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
 import ShopCard from "@/components/ShopCard";
 import Map from "@/components/Map";
+import TokenRequestDialog from "@/components/TokenRequestDialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Star, Phone, Clock, ExternalLink } from "lucide-react";
+import { MapPin, Star, Phone, Clock, ExternalLink, Ticket } from "lucide-react";
 import { mockShops, type Shop, type ShopCategory } from "@/utils/mockData";
 import { getCurrentLocation, formatDistance } from "@/utils/locationUtils";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import AuthModal from "@/components/AuthModal";
 
 const Index = () => {
   const [shops, setShops] = useState<Shop[]>(mockShops);
@@ -21,7 +25,11 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | undefined>(undefined);
+  const [isTokenDialogOpen, setIsTokenDialogOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getLocation = async () => {
@@ -93,11 +101,27 @@ const Index = () => {
   };
 
   const handleBookNow = (shop: Shop) => {
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    
     toast({
       title: "Booking Confirmed",
       description: `Your order has been prebooked at ${shop.name}. You'll receive confirmation shortly.`,
     });
     handleCloseShopDetails();
+  };
+
+  const handleRequestToken = () => {
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    
+    if (selectedShop) {
+      setIsTokenDialogOpen(true);
+    }
   };
 
   return (
@@ -213,8 +237,9 @@ const Index = () => {
               </div>
               
               <Tabs defaultValue="offers">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="offers">Offers & Deals</TabsTrigger>
+                  <TabsTrigger value="tokens">Tokens</TabsTrigger>
                   <TabsTrigger value="info">Shop Info</TabsTrigger>
                 </TabsList>
                 
@@ -253,6 +278,35 @@ const Index = () => {
                   )}
                 </TabsContent>
                 
+                <TabsContent value="tokens" className="pt-4">
+                  <div className="flex flex-col items-center justify-center p-4 border rounded-md">
+                    <div className="w-16 h-16 flex items-center justify-center bg-brand-teal/10 rounded-full mb-4">
+                      <Ticket className="w-8 h-8 text-brand-teal" />
+                    </div>
+                    <h3 className="text-lg font-medium mb-1">Digital Tokens</h3>
+                    <p className="text-center text-muted-foreground mb-4">
+                      Request a digital token when you visit {selectedShop.name}. Each token gives you $0.30 off your next purchase!
+                    </p>
+                    <Button 
+                      onClick={handleRequestToken}
+                      className="bg-brand-teal hover:bg-brand-teal/90"
+                    >
+                      Request Token
+                    </Button>
+                    {user && (
+                      <div className="mt-4 text-sm text-center text-muted-foreground">
+                        <Button 
+                          variant="link" 
+                          className="p-0 h-auto text-brand-teal"
+                          onClick={() => navigate('/tokens')}
+                        >
+                          View My Tokens
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+                
                 <TabsContent value="info" className="pt-4">
                   <div className="space-y-4">
                     <div>
@@ -276,6 +330,21 @@ const Index = () => {
           </DialogContent>
         )}
       </Dialog>
+      
+      {/* Token Request Dialog */}
+      {selectedShop && (
+        <TokenRequestDialog 
+          isOpen={isTokenDialogOpen} 
+          onClose={() => setIsTokenDialogOpen(false)} 
+          shop={selectedShop}
+        />
+      )}
+      
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+      />
     </div>
   );
 };

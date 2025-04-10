@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { MapPin, User, Menu, X, LogOut, Store, ShoppingBag } from "lucide-react";
+import { MapPin, User, Menu, X, LogOut, Store, ShoppingBag, Ticket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthModal from "./AuthModal";
@@ -51,6 +51,12 @@ const Navbar = () => {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
+                  <Link to="/tokens" className="flex items-center w-full cursor-pointer">
+                    <Ticket className="w-4 h-4 mr-2" />
+                    My Tokens
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link to="/orders" className="flex items-center w-full cursor-pointer">
                     <ShoppingBag className="w-4 h-4 mr-2" />
                     My Orders
@@ -94,6 +100,14 @@ const Navbar = () => {
             
             {user ? (
               <>
+                <Link 
+                  to="/tokens" 
+                  className="flex items-center w-full gap-2 p-2 text-sm rounded-md hover:bg-gray-100"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Ticket size={16} />
+                  <span>My Tokens</span>
+                </Link>
                 <Link 
                   to="/orders" 
                   className="flex items-center w-full gap-2 p-2 text-sm rounded-md hover:bg-gray-100"

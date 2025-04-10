@@ -77,6 +77,7 @@ export type Database = {
       }
       orders: {
         Row: {
+          commission_amount: number | null
           created_at: string | null
           id: string
           status: string | null
@@ -86,6 +87,7 @@ export type Database = {
           vendor_id: string
         }
         Insert: {
+          commission_amount?: number | null
           created_at?: string | null
           id?: string
           status?: string | null
@@ -95,6 +97,7 @@ export type Database = {
           vendor_id: string
         }
         Update: {
+          commission_amount?: number | null
           created_at?: string | null
           id?: string
           status?: string | null
@@ -109,6 +112,35 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_views: {
+        Row: {
+          id: string
+          product_id: string
+          user_id: string | null
+          viewed_at: string | null
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          user_id?: string | null
+          viewed_at?: string | null
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          user_id?: string | null
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_views_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]
@@ -269,6 +301,41 @@ export type Database = {
           weight?: number | null
         }
         Relationships: []
+      }
+      user_tokens: {
+        Row: {
+          created_at: string | null
+          id: string
+          token_count: number
+          updated_at: string | null
+          user_id: string
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          token_count?: number
+          updated_at?: string | null
+          user_id: string
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          token_count?: number
+          updated_at?: string | null
+          user_id?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_tokens_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vendors: {
         Row: {
