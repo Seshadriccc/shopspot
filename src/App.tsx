@@ -14,11 +14,12 @@ import Orders from "./pages/Orders";
 import Products from "./pages/Products";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
 import TokensPage from "./pages/TokensPage";
+import Login from "./pages/Login";
 
 // Create a client
 const queryClient = new QueryClient();
 
-// Protected route component that redirects to home if not authenticated
+// Protected route component that redirects to login if not authenticated
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useAuth();
   
@@ -27,7 +28,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
   
   if (!user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
   
   return <>{children}</>;
@@ -42,7 +43,12 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              } />
               <Route path="/become-vendor" element={
                 <ProtectedRoute>
                   <BecomeVendor />
