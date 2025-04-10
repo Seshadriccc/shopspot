@@ -15,6 +15,7 @@ import Products from "./pages/Products";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
 import TokensPage from "./pages/TokensPage";
 import Login from "./pages/Login";
+import LeadQualifier from "./pages/LeadQualifier";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -77,6 +78,11 @@ const App = () => (
               <Route path="/tokens" element={
                 <ProtectedRoute>
                   <TokensPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/lead-qualifier" element={
+                <ProtectedRoute>
+                  <LeadQualifier />
                 </ProtectedRoute>
               } />
               <Route path="*" element={<NotFound />} />
