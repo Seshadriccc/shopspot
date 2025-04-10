@@ -1,14 +1,24 @@
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { MapPin, User, Menu, X } from "lucide-react";
+import { MapPin, User, Menu, X, LogOut, Store, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import AuthModal from "./AuthModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [location, setLocation] = useState<string>("New York, NY");
+  const { user, signOut } = useAuth();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleAuthModal = () => setIsAuthModalOpen(!isAuthModalOpen);
@@ -28,10 +38,43 @@ const Navbar = () => {
             <MapPin size={16} className="text-brand-teal" />
             <span>{location}</span>
           </div>
-          <Button variant="outline" onClick={toggleAuthModal} className="gap-2">
-            <User size={16} />
-            <span>Sign In</span>
-          </Button>
+          
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <User size={16} />
+                  <span>Account</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/orders" className="flex items-center w-full cursor-pointer">
+                    <ShoppingBag className="w-4 h-4 mr-2" />
+                    My Orders
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/become-vendor" className="flex items-center w-full cursor-pointer">
+                    <Store className="w-4 h-4 mr-2" />
+                    Become a Vendor
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={signOut} className="flex items-center text-red-600 cursor-pointer">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button variant="outline" onClick={toggleAuthModal} className="gap-2">
+              <User size={16} />
+              <span>Sign In</span>
+            </Button>
+          )}
         </div>
 
         <div className="md:hidden">
@@ -48,17 +91,50 @@ const Navbar = () => {
               <MapPin size={16} className="text-brand-teal" />
               <span>{location}</span>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                toggleAuthModal();
-                setIsMenuOpen(false);
-              }} 
-              className="w-full gap-2"
-            >
-              <User size={16} />
-              <span>Sign In</span>
-            </Button>
+            
+            {user ? (
+              <>
+                <Link 
+                  to="/orders" 
+                  className="flex items-center w-full gap-2 p-2 text-sm rounded-md hover:bg-gray-100"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <ShoppingBag size={16} />
+                  <span>My Orders</span>
+                </Link>
+                <Link 
+                  to="/become-vendor" 
+                  className="flex items-center w-full gap-2 p-2 text-sm rounded-md hover:bg-gray-100"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Store size={16} />
+                  <span>Become a Vendor</span>
+                </Link>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    signOut();
+                    setIsMenuOpen(false);
+                  }} 
+                  className="w-full gap-2 text-red-600"
+                >
+                  <LogOut size={16} />
+                  <span>Sign Out</span>
+                </Button>
+              </>
+            ) : (
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  toggleAuthModal();
+                  setIsMenuOpen(false);
+                }} 
+                className="w-full gap-2"
+              >
+                <User size={16} />
+                <span>Sign In</span>
+              </Button>
+            )}
           </div>
         </div>
       )}
