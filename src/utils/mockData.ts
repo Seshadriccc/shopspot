@@ -2,6 +2,14 @@ import { faker } from '@faker-js/faker';
 
 export type ShopCategory = "restaurant" | "retail" | "service" | "streetFood";
 
+// Define categories with icons for UI display
+export const categories = [
+  { id: "restaurant", name: "Restaurants", icon: "🍽️" },
+  { id: "retail", name: "Retail", icon: "🛍️" },
+  { id: "service", name: "Services", icon: "🔧" },
+  { id: "streetFood", name: "Street Food", icon: "🌮" }
+];
+
 export interface Offer {
   id: string;
   title: string;
@@ -717,4 +725,285 @@ export const mockShops: Shop[] = [
     address: "548 Broadway, New York, NY 10012",
     distance: 0.9,
     rating: 4.5,
-    ratingCount: 1
+    ratingCount: 178,
+    openingHours: {
+      open: "9:00 AM",
+      close: "5:00 PM"
+    },
+    offers: [
+      {
+        id: "sv901",
+        title: "Tax Filing Special",
+        description: "Discounted tax preparation services",
+        discount: 15,
+        validUntil: "2025-04-15"
+      }
+    ]
+  },
+  {
+    id: "sv10",
+    name: "Green Cleaning",
+    description: "Eco-friendly home and office cleaning services",
+    category: "service",
+    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "112 W 34th St, New York, NY 10120",
+    distance: 1.2,
+    rating: 4.6,
+    ratingCount: 193,
+    openingHours: {
+      open: "8:00 AM",
+      close: "6:00 PM"
+    },
+    offers: [
+      {
+        id: "sv1001",
+        title: "First-Time Cleaning",
+        description: "Special discount for new customers",
+        discount: 20,
+        validUntil: "2025-12-31"
+      }
+    ]
+  },
+  
+  // Street Food category (10 shops)
+  {
+    id: "sf1",
+    name: "Taco Truck Heaven",
+    description: "Authentic Mexican street tacos with homemade salsas",
+    category: "streetFood",
+    image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "Union Square Park, New York, NY 10003",
+    distance: 0.4,
+    rating: 4.7,
+    ratingCount: 342,
+    openingHours: {
+      open: "11:00 AM",
+      close: "8:00 PM"
+    },
+    offers: [
+      {
+        id: "sf101",
+        title: "Taco Tuesday",
+        description: "Buy 3 tacos, get 1 free every Tuesday",
+        discount: 25,
+        validUntil: "2025-12-31"
+      }
+    ]
+  },
+  {
+    id: "sf2",
+    name: "Gyro King",
+    description: "Mediterranean gyros and kebabs made to order",
+    category: "streetFood",
+    image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "Bryant Park, New York, NY 10018",
+    distance: 0.6,
+    rating: 4.6,
+    ratingCount: 287,
+    openingHours: {
+      open: "10:30 AM",
+      close: "9:00 PM"
+    },
+    offers: [
+      {
+        id: "sf201",
+        title: "Lunch Combo",
+        description: "Gyro, fries, and drink special",
+        discount: 15,
+        validUntil: "2025-10-15"
+      }
+    ]
+  },
+  {
+    id: "sf3",
+    name: "Dumpling Delight",
+    description: "Hand-made dumplings with various fillings",
+    category: "streetFood",
+    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "Chinatown, New York, NY 10013",
+    distance: 1.1,
+    rating: 4.8,
+    ratingCount: 421,
+    openingHours: {
+      open: "11:00 AM",
+      close: "8:00 PM"
+    },
+    offers: [
+      {
+        id: "sf301",
+        title: "Dumpling Sampler",
+        description: "Try 8 different dumpling varieties",
+        discount: 20,
+        validUntil: "2025-09-30"
+      }
+    ]
+  },
+  {
+    id: "sf4",
+    name: "Falafel Express",
+    description: "Fresh, crispy falafel in pita with homemade sauces",
+    category: "streetFood",
+    image: "https://images.unsplash.com/photo-1585937421612-70a008356c36?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "Washington Square Park, New York, NY 10012",
+    distance: 0.7,
+    rating: 4.5,
+    ratingCount: 198,
+    openingHours: {
+      open: "10:00 AM",
+      close: "7:00 PM"
+    },
+    offers: [
+      {
+        id: "sf401",
+        title: "Falafel Combo",
+        description: "Falafel wrap with sides and drink",
+        discount: 15,
+        validUntil: "2025-08-15"
+      }
+    ]
+  },
+  {
+    id: "sf5",
+    name: "Bagel Cart",
+    description: "New York style bagels with various spreads and toppings",
+    category: "streetFood",
+    image: "https://images.unsplash.com/photo-1592591748738-65c43a5d7235?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "5th Ave & 42nd St, New York, NY 10018",
+    distance: 0.5,
+    rating: 4.4,
+    ratingCount: 176,
+    openingHours: {
+      open: "6:00 AM",
+      close: "2:00 PM"
+    },
+    offers: [
+      {
+        id: "sf501",
+        title: "Morning Special",
+        description: "Bagel with cream cheese and coffee",
+        discount: 20,
+        validUntil: "2025-11-30"
+      }
+    ]
+  },
+  {
+    id: "sf6",
+    name: "Hot Dog Heaven",
+    description: "Classic New York hot dogs with all the fixings",
+    category: "streetFood",
+    image: "https://images.unsplash.com/photo-1619740773787-ede33bc67d88?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "Central Park South, New York, NY 10019",
+    distance: 0.8,
+    rating: 4.3,
+    ratingCount: 265,
+    openingHours: {
+      open: "10:00 AM",
+      close: "6:00 PM"
+    },
+    offers: [
+      {
+        id: "sf601",
+        title: "Dog & Drink Deal",
+        description: "Hot dog and soda combo",
+        discount: 15,
+        validUntil: "2025-12-15"
+      }
+    ]
+  },
+  {
+    id: "sf7",
+    name: "Smoothie Bike",
+    description: "Fresh fruit smoothies made on a bicycle-powered blender",
+    category: "streetFood",
+    image: "https://images.unsplash.com/photo-1638176066666-ffb2f013c7dd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "Hudson River Park, New York, NY 10014",
+    distance: 1.3,
+    rating: 4.7,
+    ratingCount: 129,
+    openingHours: {
+      open: "9:00 AM",
+      close: "5:00 PM"
+    },
+    offers: [
+      {
+        id: "sf701",
+        title: "Detox Special",
+        description: "Green smoothie with superfood add-ins",
+        discount: 10,
+        validUntil: "2025-10-31"
+      }
+    ]
+  },
+  {
+    id: "sf8",
+    name: "Crepe Corner",
+    description: "Sweet and savory crepes made to order",
+    category: "streetFood",
+    image: "https://images.unsplash.com/photo-1519676867240-f03562e64548?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "Times Square, New York, NY 10036",
+    distance: 0.9,
+    rating: 4.6,
+    ratingCount: 203,
+    openingHours: {
+      open: "11:00 AM",
+      close: "10:00 PM"
+    },
+    offers: [
+      {
+        id: "sf801",
+        title: "Sweet & Savory Combo",
+        description: "One sweet and one savory crepe at special price",
+        discount: 25,
+        validUntil: "2025-09-15"
+      }
+    ]
+  },
+  {
+    id: "sf9",
+    name: "Waffles & More",
+    description: "Belgian waffles with various toppings and fillings",
+    category: "streetFood",
+    image: "https://images.unsplash.com/photo-1593786047743-8c86546cde85?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "Madison Square Park, New York, NY 10010",
+    distance: 0.5,
+    rating: 4.9,
+    ratingCount: 156,
+    openingHours: {
+      open: "8:00 AM",
+      close: "8:00 PM"
+    },
+    offers: [
+      {
+        id: "sf901",
+        title: "Double Waffle",
+        description: "Buy one waffle, get second at half price",
+        discount: 50,
+        validUntil: "2025-08-31"
+      }
+    ]
+  },
+  {
+    id: "sf10",
+    name: "Empanada Stand",
+    description: "Authentic Latin American empanadas with various fillings",
+    category: "streetFood",
+    image: "https://images.unsplash.com/photo-1604478579007-6efe91da8c8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
+    address: "High Line Park, New York, NY 10011",
+    distance: 1.0,
+    rating: 4.5,
+    ratingCount: 178,
+    openingHours: {
+      open: "11:30 AM",
+      close: "7:30 PM"
+    },
+    offers: [
+      {
+        id: "sf1001",
+        title: "Empanada Trio",
+        description: "Three empanadas of your choice for special price",
+        discount: 20,
+        validUntil: "2025-11-15"
+      }
+    ]
+  }
+];
