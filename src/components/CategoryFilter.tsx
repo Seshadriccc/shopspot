@@ -29,7 +29,7 @@ const CategoryFilter = ({ onSelect, selected }: CategoryFilterProps) => {
             className={`rounded-full px-4 ${
               selected === category.id ? "bg-brand-teal text-white" : ""
             }`}
-            onClick={() => onSelect(category.id)}
+            onClick={() => onSelect(category.id as ShopCategory)}
           >
             <span className="mr-2">{category.icon}</span>
             {category.name}
