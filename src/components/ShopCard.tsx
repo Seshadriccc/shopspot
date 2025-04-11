@@ -6,6 +6,7 @@ import OfferBadge from "./OfferBadge";
 import { formatDistance } from "@/utils/locationUtils";
 import type { Shop } from "@/utils/mockData";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface ShopCardProps {
   shop: Shop;
@@ -17,6 +18,7 @@ interface ShopCardProps {
 const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice = null }: ShopCardProps) => {
   const { name, category, image, rating, distance, offers, openingHours, menuItems } = shop;
   const navigate = useNavigate();
+  const [imageError, setImageError] = useState(false);
 
   // Get highest discount for the badge
   const highestDiscount = offers.length > 0 
@@ -43,6 +45,22 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
   // Check if shop has menu items
   const hasMenu = menuItems && menuItems.length > 0;
 
+  // Get fallback image based on category
+  const getFallbackImage = () => {
+    switch(category) {
+      case 'restaurant':
+        return "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop";
+      case 'retail':
+        return "https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?w=800&h=600&fit=crop";
+      case 'service':
+        return "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=800&h=600&fit=crop";
+      case 'streetFood':
+        return "https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?w=800&h=600&fit=crop";
+      default:
+        return "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&h=600&fit=crop";
+    }
+  };
+
   return (
     <Card 
       className="overflow-hidden transition-transform duration-200 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
@@ -51,13 +69,10 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
       <div className="relative h-40">
         {highestDiscount > 0 && <OfferBadge discount={highestDiscount} />}
         <img 
-          src={image} 
+          src={imageError ? getFallbackImage() : image} 
           alt={name} 
           className="w-full h-full object-cover"
-          onError={(e) => {
-            // Fallback image if the original fails to load
-            e.currentTarget.src = `https://source.unsplash.com/random/800x600/?${category}`;
-          }}
+          onError={() => setImageError(true)}
         />
       </div>
       <CardContent className="p-4">

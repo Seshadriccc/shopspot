@@ -64,5 +64,5 @@ export interface Shop {
   menuItems?: MenuItem[];
 }
 
-// Generate 10 shops for each category
+// Generate shops for all categories
 export const mockShops: Shop[] = generateShops();

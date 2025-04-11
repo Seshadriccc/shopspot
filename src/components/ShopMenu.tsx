@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MenuItemCard from './MenuItemCard';
 import { MenuItem } from '@/utils/mockData';
-import { Utensils, Coffee, CakeSlice, Wine } from 'lucide-react';
+import { Utensils, Coffee, CakeSlice, Wine, Salad } from 'lucide-react';
 
 interface ShopMenuProps {
   menuItems: MenuItem[];
@@ -15,14 +15,14 @@ const ShopMenu: React.FC<ShopMenuProps> = ({ menuItems }) => {
   const categories = Array.from(new Set(menuItems.map(item => item.category)));
   
   const getCategoryIcon = (category: string) => {
-    switch(category) {
-      case 'Appetizer':
+    switch(category.toLowerCase()) {
+      case 'appetizer':
+        return <Salad className="mr-2 h-4 w-4" />;
+      case 'main course':
         return <Utensils className="mr-2 h-4 w-4" />;
-      case 'Main Course':
-        return <Utensils className="mr-2 h-4 w-4" />;
-      case 'Dessert':
+      case 'dessert':
         return <CakeSlice className="mr-2 h-4 w-4" />;
-      case 'Beverage':
+      case 'beverage':
         return <Coffee className="mr-2 h-4 w-4" />;
       default:
         return <Utensils className="mr-2 h-4 w-4" />;
@@ -47,7 +47,7 @@ const ShopMenu: React.FC<ShopMenuProps> = ({ menuItems }) => {
               {
                 id: crypto.randomUUID(),
                 userName: "You", // In a real app, this would come from the authenticated user
-                userAvatar: "https://i.pravatar.cc/150?u=user123",
+                userAvatar: "https://i.pravatar.cc/150?img=33",
                 rating,
                 comment,
                 date: new Date().toISOString()
@@ -72,7 +72,7 @@ const ShopMenu: React.FC<ShopMenuProps> = ({ menuItems }) => {
       <h2 className="text-2xl font-bold mb-4">Menu</h2>
       
       <Tabs defaultValue={categories[0]} className="w-full">
-        <TabsList className="mb-4 w-full sm:w-auto">
+        <TabsList className="mb-4 w-full sm:w-auto overflow-auto">
           {categories.map(category => (
             <TabsTrigger key={category} value={category} className="flex items-center">
               {getCategoryIcon(category)}

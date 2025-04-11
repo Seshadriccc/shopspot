@@ -20,6 +20,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onAddComment }) => {
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState(5);
   const [showCommentForm, setShowCommentForm] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleAddComment = () => {
     if (!newComment.trim()) {
@@ -57,17 +58,28 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onAddComment }) => {
     );
   };
 
+  // Get fallback image based on category
+  const getFallbackImage = () => {
+    const category = item.category.toLowerCase();
+    if (category.includes('dessert')) {
+      return "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=500&h=350&fit=crop";
+    } else if (category.includes('beverage')) {
+      return "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=500&h=350&fit=crop";
+    } else if (category.includes('appetizer')) {
+      return "https://images.unsplash.com/photo-1541795795328-f073b763494e?w=500&h=350&fit=crop";
+    } else {
+      return "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&h=350&fit=crop";
+    }
+  };
+
   return (
     <Card className="overflow-hidden h-full flex flex-col">
       <div className="relative h-48 overflow-hidden bg-gray-100">
         <img 
-          src={item.image} 
+          src={imageError ? getFallbackImage() : item.image} 
           alt={item.name} 
           className="w-full h-full object-cover"
-          onError={(e) => {
-            // Fallback for image loading errors
-            e.currentTarget.src = "https://source.unsplash.com/random/400x300/?food";
-          }}
+          onError={() => setImageError(true)}
         />
         {item.isVegetarian && (
           <Badge className="absolute top-2 right-2 bg-green-500">
@@ -130,7 +142,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onAddComment }) => {
                           alt={comment.userName}
                           className="w-8 h-8 rounded-full mr-2"
                           onError={(e) => {
-                            e.currentTarget.src = "https://i.pravatar.cc/150";
+                            e.currentTarget.src = "https://i.pravatar.cc/150?img=0";
                           }}
                         />
                         <div>
