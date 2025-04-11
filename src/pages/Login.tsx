@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -12,6 +11,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import RequestPasswordReset from "@/components/RequestPasswordReset";
 
 const authSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -23,6 +23,7 @@ type AuthFormValues = z.infer<typeof authSchema>;
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const { signIn, signUp, user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -64,6 +65,27 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
+  if (showForgotPassword) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="p-2 text-2xl font-bold bg-brand-teal rounded-md text-white">SP</div>
+            </div>
+            <CardTitle className="text-2xl font-bold">Forgot Password</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RequestPasswordReset onBack={() => setShowForgotPassword(false)} />
+          </CardContent>
+          <CardFooter className="flex justify-center text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} ShopSpot. All rights reserved.
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
@@ -110,7 +132,19 @@ const Login = () => {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <div className="flex items-center justify-between">
+                          <FormLabel>Password</FormLabel>
+                          <Button 
+                            variant="link" 
+                            className="p-0 h-auto text-xs"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setShowForgotPassword(true);
+                            }}
+                          >
+                            Forgot password?
+                          </Button>
+                        </div>
                         <FormControl>
                           <Input 
                             type="password" 

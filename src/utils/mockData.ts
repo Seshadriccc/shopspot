@@ -15,6 +15,7 @@ export interface Offer {
   title: string;
   description: string;
   discount: number;
+  originalPrice?: number;
   validUntil: string;
 }
 
@@ -60,6 +61,7 @@ export const mockShops: Shop[] = [
         title: "Family Meal Deal",
         description: "Four-course meal for 4 people with wine",
         discount: 15,
+        originalPrice: 100,
         validUntil: "2025-12-31"
       }
     ]
@@ -84,6 +86,7 @@ export const mockShops: Shop[] = [
         title: "Omakase Experience",
         description: "Chef's selection of premium sushi",
         discount: 10,
+        originalPrice: 120,
         validUntil: "2025-09-30"
       }
     ]
@@ -108,6 +111,7 @@ export const mockShops: Shop[] = [
         title: "Burger + Fries + Drink",
         description: "Complete meal deal for one person",
         discount: 20,
+        originalPrice: 150,
         validUntil: "2025-08-15"
       }
     ]
@@ -132,6 +136,7 @@ export const mockShops: Shop[] = [
         title: "Lunch Special",
         description: "Any entree with soup and appetizer",
         discount: 15,
+        originalPrice: 130,
         validUntil: "2025-10-15"
       }
     ]
@@ -156,6 +161,7 @@ export const mockShops: Shop[] = [
         title: "Mezze Platter",
         description: "Assortment of Mediterranean appetizers",
         discount: 20,
+        originalPrice: 140,
         validUntil: "2025-11-30"
       }
     ]
@@ -180,6 +186,7 @@ export const mockShops: Shop[] = [
         title: "Taco Tuesday",
         description: "50% off all tacos on Tuesdays",
         discount: 50,
+        originalPrice: 160,
         validUntil: "2025-12-31"
       }
     ]
@@ -204,6 +211,7 @@ export const mockShops: Shop[] = [
         title: "Wine Pairing",
         description: "Free glass of wine with premium steak",
         discount: 25,
+        originalPrice: 180,
         validUntil: "2025-09-15"
       }
     ]
@@ -228,6 +236,7 @@ export const mockShops: Shop[] = [
         title: "Weekend Brunch",
         description: "All-you-can-eat dim sum",
         discount: 15,
+        originalPrice: 150,
         validUntil: "2025-08-30"
       }
     ]
@@ -252,6 +261,7 @@ export const mockShops: Shop[] = [
         title: "Curry Feast",
         description: "Three curry dishes with rice and naan",
         discount: 20,
+        originalPrice: 170,
         validUntil: "2025-10-31"
       }
     ]
@@ -276,6 +286,7 @@ export const mockShops: Shop[] = [
         title: "Family Style Dinner",
         description: "Shared platters for 4-6 people",
         discount: 15,
+        originalPrice: 160,
         validUntil: "2025-11-15"
       }
     ]
@@ -302,6 +313,7 @@ export const mockShops: Shop[] = [
         title: "Summer Collection",
         description: "New arrivals at special prices",
         discount: 25,
+        originalPrice: 120,
         validUntil: "2025-07-31"
       }
     ]
@@ -326,6 +338,7 @@ export const mockShops: Shop[] = [
         title: "Smartphone Accessories",
         description: "Buy 2 get 1 free on all accessories",
         discount: 33,
+        originalPrice: 150,
         validUntil: "2025-06-30"
       }
     ]
@@ -350,6 +363,7 @@ export const mockShops: Shop[] = [
         title: "Living Room Collection",
         description: "Special pricing on furniture sets",
         discount: 20,
+        originalPrice: 130,
         validUntil: "2025-08-31"
       }
     ]
@@ -374,6 +388,7 @@ export const mockShops: Shop[] = [
         title: "Book Club Special",
         description: "Buy 5 books, get the 6th free",
         discount: 17,
+        originalPrice: 140,
         validUntil: "2025-12-31"
       }
     ]
@@ -398,6 +413,7 @@ export const mockShops: Shop[] = [
         title: "Camping Gear",
         description: "Complete camping set at special price",
         discount: 30,
+        originalPrice: 160,
         validUntil: "2025-07-15"
       }
     ]
@@ -422,6 +438,7 @@ export const mockShops: Shop[] = [
         title: "Classic Rock Collection",
         description: "Buy 3 records, get 15% off",
         discount: 15,
+        originalPrice: 120,
         validUntil: "2025-09-30"
       }
     ]
@@ -446,6 +463,7 @@ export const mockShops: Shop[] = [
         title: "Local Artists Showcase",
         description: "Special pricing on featured items",
         discount: 20,
+        originalPrice: 140,
         validUntil: "2025-08-15"
       }
     ]
@@ -470,6 +488,7 @@ export const mockShops: Shop[] = [
         title: "Skincare Bundle",
         description: "Complete skincare routine products",
         discount: 25,
+        originalPrice: 150,
         validUntil: "2025-10-31"
       }
     ]
@@ -494,6 +513,7 @@ export const mockShops: Shop[] = [
         title: "Imported Delicacies",
         description: "Special selection of gourmet items",
         discount: 15,
+        originalPrice: 130,
         validUntil: "2025-11-15"
       }
     ]
@@ -518,6 +538,7 @@ export const mockShops: Shop[] = [
         title: "Pet Care Bundle",
         description: "Essential pet care products",
         discount: 20,
+        originalPrice: 140,
         validUntil: "2025-12-15"
       }
     ]
@@ -544,6 +565,7 @@ export const mockShops: Shop[] = [
         title: "Ultimate Relaxation Package",
         description: "90-minute massage with facial",
         discount: 20,
+        originalPrice: 160,
         validUntil: "2025-06-15"
       }
     ]
@@ -568,6 +590,7 @@ export const mockShops: Shop[] = [
         title: "Phone Screen Replacement",
         description: "Discounted screen repairs for all models",
         discount: 15,
+        originalPrice: 120,
         validUntil: "2025-05-31"
       }
     ]
@@ -592,6 +615,7 @@ export const mockShops: Shop[] = [
         title: "Summer Maintenance",
         description: "Complete car check-up and fluid change",
         discount: 25,
+        originalPrice: 150,
         validUntil: "2025-08-31"
       }
     ]
@@ -616,6 +640,7 @@ export const mockShops: Shop[] = [
         title: "Business Attire Special",
         description: "Suits and formal wear cleaning",
         discount: 20,
+        originalPrice: 130,
         validUntil: "2025-07-15"
       }
     ]
@@ -640,6 +665,7 @@ export const mockShops: Shop[] = [
         title: "Family Portrait Package",
         description: "Studio session with prints",
         discount: 30,
+        originalPrice: 140,
         validUntil: "2025-11-30"
       }
     ]
@@ -664,6 +690,7 @@ export const mockShops: Shop[] = [
         title: "Personal Training",
         description: "5-session package with fitness assessment",
         discount: 20,
+        originalPrice: 130,
         validUntil: "2025-09-15"
       }
     ]
@@ -688,6 +715,7 @@ export const mockShops: Shop[] = [
         title: "Small Business Web Package",
         description: "Website design with SEO optimization",
         discount: 15,
+        originalPrice: 120,
         validUntil: "2025-10-31"
       }
     ]
@@ -712,6 +740,7 @@ export const mockShops: Shop[] = [
         title: "Dental Cleaning",
         description: "Comprehensive cleaning and check-up",
         discount: 25,
+        originalPrice: 140,
         validUntil: "2025-08-31"
       }
     ]
@@ -736,6 +765,7 @@ export const mockShops: Shop[] = [
         title: "Tax Filing Special",
         description: "Discounted tax preparation services",
         discount: 15,
+        originalPrice: 120,
         validUntil: "2025-04-15"
       }
     ]
@@ -760,6 +790,7 @@ export const mockShops: Shop[] = [
         title: "First-Time Cleaning",
         description: "Special discount for new customers",
         discount: 20,
+        originalPrice: 130,
         validUntil: "2025-12-31"
       }
     ]
@@ -786,6 +817,7 @@ export const mockShops: Shop[] = [
         title: "Taco Tuesday",
         description: "Buy 3 tacos, get 1 free every Tuesday",
         discount: 25,
+        originalPrice: 120,
         validUntil: "2025-12-31"
       }
     ]
@@ -810,6 +842,7 @@ export const mockShops: Shop[] = [
         title: "Lunch Combo",
         description: "Gyro, fries, and drink special",
         discount: 15,
+        originalPrice: 130,
         validUntil: "2025-10-15"
       }
     ]
@@ -834,6 +867,7 @@ export const mockShops: Shop[] = [
         title: "Dumpling Sampler",
         description: "Try 8 different dumpling varieties",
         discount: 20,
+        originalPrice: 140,
         validUntil: "2025-09-30"
       }
     ]
@@ -858,6 +892,7 @@ export const mockShops: Shop[] = [
         title: "Falafel Combo",
         description: "Falafel wrap with sides and drink",
         discount: 15,
+        originalPrice: 130,
         validUntil: "2025-08-15"
       }
     ]
@@ -882,6 +917,7 @@ export const mockShops: Shop[] = [
         title: "Morning Special",
         description: "Bagel with cream cheese and coffee",
         discount: 20,
+        originalPrice: 120,
         validUntil: "2025-11-30"
       }
     ]
@@ -906,6 +942,7 @@ export const mockShops: Shop[] = [
         title: "Dog & Drink Deal",
         description: "Hot dog and soda combo",
         discount: 15,
+        originalPrice: 130,
         validUntil: "2025-12-15"
       }
     ]
@@ -930,6 +967,7 @@ export const mockShops: Shop[] = [
         title: "Detox Special",
         description: "Green smoothie with superfood add-ins",
         discount: 10,
+        originalPrice: 120,
         validUntil: "2025-10-31"
       }
     ]
@@ -954,6 +992,7 @@ export const mockShops: Shop[] = [
         title: "Sweet & Savory Combo",
         description: "One sweet and one savory crepe at special price",
         discount: 25,
+        originalPrice: 140,
         validUntil: "2025-09-15"
       }
     ]
@@ -978,6 +1017,7 @@ export const mockShops: Shop[] = [
         title: "Double Waffle",
         description: "Buy one waffle, get second at half price",
         discount: 50,
+        originalPrice: 160,
         validUntil: "2025-08-31"
       }
     ]
@@ -1002,6 +1042,7 @@ export const mockShops: Shop[] = [
         title: "Empanada Trio",
         description: "Three empanadas of your choice for special price",
         discount: 20,
+        originalPrice: 130,
         validUntil: "2025-11-15"
       }
     ]

@@ -1,5 +1,5 @@
 
-import { Star, MapPin, Clock } from "lucide-react";
+import { Star, MapPin, Clock, Tag } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import OfferBadge from "./OfferBadge";
@@ -18,6 +18,10 @@ const ShopCard = ({ shop, onClick }: ShopCardProps) => {
   const highestDiscount = offers.length > 0 
     ? Math.max(...offers.map(offer => offer.discount)) 
     : 0;
+
+  // Calculate discounted price for display if there are offers
+  const displayOffer = offers.length > 0 ? offers[0] : null;
+  const hasPrice = displayOffer && displayOffer.originalPrice;
 
   return (
     <Card 
@@ -50,6 +54,24 @@ const ShopCard = ({ shop, onClick }: ShopCardProps) => {
           <Clock size={14} />
           <span>{openingHours.open} - {openingHours.close}</span>
         </div>
+        
+        {hasPrice && (
+          <div className="flex items-center gap-2 text-sm mb-3">
+            <Tag size={14} className="text-brand-teal" />
+            {highestDiscount > 0 ? (
+              <div className="flex items-baseline gap-1">
+                <span className="font-bold text-brand-teal">
+                  ${(displayOffer.originalPrice * (100 - highestDiscount) / 100).toFixed(2)}
+                </span>
+                <span className="text-xs line-through text-muted-foreground">
+                  ${displayOffer.originalPrice.toFixed(2)}
+                </span>
+              </div>
+            ) : (
+              <span className="font-bold">${displayOffer.originalPrice.toFixed(2)}</span>
+            )}
+          </div>
+        )}
         
         <div className="flex flex-wrap gap-2">
           <Badge variant="outline" className="bg-muted/50">

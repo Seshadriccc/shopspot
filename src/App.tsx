@@ -16,6 +16,7 @@ import SubscriptionPlans from "./pages/SubscriptionPlans";
 import TokensPage from "./pages/TokensPage";
 import Login from "./pages/Login";
 import LeadQualifier from "./pages/LeadQualifier";
+import ResetPassword from "./pages/ResetPassword";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/login" element={<Login />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/" element={
                 <ProtectedRoute>
                   <Index />
