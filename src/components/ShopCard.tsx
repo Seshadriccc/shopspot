@@ -1,5 +1,5 @@
 
-import { Star, MapPin, Clock, Tag, Percent } from "lucide-react";
+import { Star, MapPin, Clock, Tag, Percent, Utensils } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import OfferBadge from "./OfferBadge";
@@ -15,7 +15,7 @@ interface ShopCardProps {
 }
 
 const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice = null }: ShopCardProps) => {
-  const { name, category, image, rating, distance, offers, openingHours } = shop;
+  const { name, category, image, rating, distance, offers, openingHours, menuItems } = shop;
   const navigate = useNavigate();
 
   // Get highest discount for the badge
@@ -40,6 +40,9 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
     ? Math.round((competitorPrice - discountedPrice) / competitorPrice * 100) 
     : null;
 
+  // Check if shop has menu items
+  const hasMenu = menuItems && menuItems.length > 0;
+
   return (
     <Card 
       className="overflow-hidden transition-transform duration-200 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
@@ -51,6 +54,10 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
           src={image} 
           alt={name} 
           className="w-full h-full object-cover"
+          onError={(e) => {
+            // Fallback image if the original fails to load
+            e.currentTarget.src = `https://source.unsplash.com/random/800x600/?${category}`;
+          }}
         />
       </div>
       <CardContent className="p-4">
@@ -106,6 +113,12 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
           {offers.length > 0 && (
             <Badge className="bg-brand-coral">
               {offers.length} {offers.length === 1 ? 'Deal' : 'Deals'}
+            </Badge>
+          )}
+          {hasMenu && (
+            <Badge variant="outline" className="flex items-center gap-1 bg-blue-50 text-blue-700 border-blue-200">
+              <Utensils size={12} />
+              Menu
             </Badge>
           )}
         </div>
