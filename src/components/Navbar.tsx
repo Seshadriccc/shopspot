@@ -1,8 +1,8 @@
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { MapPin, User, Menu, X, LogOut, Store, ShoppingBag, Ticket } from "lucide-react";
-import { Link } from "react-router-dom";
+import { MapPin, User, Menu, X, LogOut, Store, ShoppingBag, Ticket, UserPlus, CreditCard } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthModal from "./AuthModal";
 import {
@@ -18,7 +18,8 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [location, setLocation] = useState<string>("New York, NY");
-  const { user, signOut } = useAuth();
+  const { user, signOut, isVendor } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleAuthModal = () => setIsAuthModalOpen(!isAuthModalOpen);
@@ -62,12 +63,23 @@ const Navbar = () => {
                     My Orders
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/become-vendor" className="flex items-center w-full cursor-pointer">
-                    <Store className="w-4 h-4 mr-2" />
-                    Become a Vendor
-                  </Link>
-                </DropdownMenuItem>
+                
+                {isVendor ? (
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard" className="flex items-center w-full cursor-pointer">
+                      <Store className="w-4 h-4 mr-2" />
+                      Vendor Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem asChild>
+                    <Link to="/become-vendor" className="flex items-center w-full cursor-pointer">
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Become a Vendor
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={signOut} className="flex items-center text-red-600 cursor-pointer">
                   <LogOut className="w-4 h-4 mr-2" />
@@ -76,10 +88,16 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button variant="outline" onClick={toggleAuthModal} className="gap-2">
-              <User size={16} />
-              <span>Sign In</span>
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" onClick={() => navigate('/login')} className="gap-2">
+                <User size={16} />
+                <span>Sign In</span>
+              </Button>
+              <Button onClick={() => navigate('/login')} className="gap-2 bg-brand-teal hover:bg-brand-teal/90">
+                <UserPlus size={16} />
+                <span>Register</span>
+              </Button>
+            </div>
           )}
         </div>
 
@@ -116,14 +134,25 @@ const Navbar = () => {
                   <ShoppingBag size={16} />
                   <span>My Orders</span>
                 </Link>
-                <Link 
-                  to="/become-vendor" 
-                  className="flex items-center w-full gap-2 p-2 text-sm rounded-md hover:bg-gray-100"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Store size={16} />
-                  <span>Become a Vendor</span>
-                </Link>
+                {isVendor ? (
+                  <Link 
+                    to="/dashboard" 
+                    className="flex items-center w-full gap-2 p-2 text-sm rounded-md hover:bg-gray-100"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Store size={16} />
+                    <span>Vendor Dashboard</span>
+                  </Link>
+                ) : (
+                  <Link 
+                    to="/become-vendor" 
+                    className="flex items-center w-full gap-2 p-2 text-sm rounded-md hover:bg-gray-100"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <UserPlus size={16} />
+                    <span>Become a Vendor</span>
+                  </Link>
+                )}
                 <Button 
                   variant="outline" 
                   onClick={() => {
@@ -137,17 +166,29 @@ const Navbar = () => {
                 </Button>
               </>
             ) : (
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  toggleAuthModal();
-                  setIsMenuOpen(false);
-                }} 
-                className="w-full gap-2"
-              >
-                <User size={16} />
-                <span>Sign In</span>
-              </Button>
+              <>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    navigate('/login');
+                    setIsMenuOpen(false);
+                  }} 
+                  className="w-full gap-2"
+                >
+                  <User size={16} />
+                  <span>Sign In</span>
+                </Button>
+                <Button 
+                  onClick={() => {
+                    navigate('/login');
+                    setIsMenuOpen(false);
+                  }} 
+                  className="w-full gap-2 bg-brand-teal hover:bg-brand-teal/90"
+                >
+                  <UserPlus size={16} />
+                  <span>Register</span>
+                </Button>
+              </>
             )}
           </div>
         </div>

@@ -13,6 +13,7 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
+  isVendor: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,7 +22,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isVendor, setIsVendor] = useState<boolean>(false);
   const { toast } = useToast();
+
+  // Check if user is a vendor
+  const checkVendorStatus = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('vendors')
+        .select('id')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (error) throw error;
+      setIsVendor(!!data);
+    } catch (error) {
+      console.error('Error checking vendor status:', error);
+      setIsVendor(false);
+    }
+  };
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -29,6 +48,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          // Use setTimeout to prevent recursive Supabase calls
+          setTimeout(() => {
+            checkVendorStatus(session.user.id);
+          }, 0);
+        } else {
+          setIsVendor(false);
+        }
       }
     );
 
@@ -36,6 +64,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        checkVendorStatus(session.user.id);
+      }
+      
       setIsLoading(false);
     });
 
@@ -159,7 +192,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       signUp, 
       signOut,
       resetPassword,
-      updatePassword
+      updatePassword,
+      isVendor
     }}>
       {children}
     </AuthContext.Provider>

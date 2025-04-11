@@ -1,18 +1,22 @@
 
-import { Star, MapPin, Clock, Tag } from "lucide-react";
+import { Star, MapPin, Clock, Tag, Percent } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import OfferBadge from "./OfferBadge";
 import { formatDistance } from "@/utils/locationUtils";
 import type { Shop } from "@/utils/mockData";
+import { useNavigate } from "react-router-dom";
 
 interface ShopCardProps {
   shop: Shop;
   onClick: (shop: Shop) => void;
+  showPriceComparison?: boolean;
+  competitorPrice?: number | null;
 }
 
-const ShopCard = ({ shop, onClick }: ShopCardProps) => {
+const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice = null }: ShopCardProps) => {
   const { name, category, image, rating, distance, offers, openingHours } = shop;
+  const navigate = useNavigate();
 
   // Get highest discount for the badge
   const highestDiscount = offers.length > 0 
@@ -22,6 +26,19 @@ const ShopCard = ({ shop, onClick }: ShopCardProps) => {
   // Calculate discounted price for display if there are offers
   const displayOffer = offers.length > 0 ? offers[0] : null;
   const hasPrice = displayOffer && displayOffer.originalPrice;
+  
+  const discountedPrice = hasPrice 
+    ? displayOffer.originalPrice * (100 - highestDiscount) / 100 
+    : null;
+
+  // Calculate savings if showing price comparison
+  const savings = (competitorPrice && discountedPrice) 
+    ? (competitorPrice - discountedPrice) 
+    : null;
+  
+  const savingsPercent = (competitorPrice && discountedPrice) 
+    ? Math.round((competitorPrice - discountedPrice) / competitorPrice * 100) 
+    : null;
 
   return (
     <Card 
@@ -61,7 +78,7 @@ const ShopCard = ({ shop, onClick }: ShopCardProps) => {
             {highestDiscount > 0 ? (
               <div className="flex items-baseline gap-1">
                 <span className="font-bold text-brand-teal">
-                  ${(displayOffer.originalPrice * (100 - highestDiscount) / 100).toFixed(2)}
+                  ${discountedPrice.toFixed(2)}
                 </span>
                 <span className="text-xs line-through text-muted-foreground">
                   ${displayOffer.originalPrice.toFixed(2)}
@@ -70,6 +87,15 @@ const ShopCard = ({ shop, onClick }: ShopCardProps) => {
             ) : (
               <span className="font-bold">${displayOffer.originalPrice.toFixed(2)}</span>
             )}
+          </div>
+        )}
+        
+        {showPriceComparison && hasPrice && savings !== null && savings > 0 && (
+          <div className="mb-3 p-2 bg-green-50 rounded-md flex items-center gap-2">
+            <Percent size={14} className="text-green-600" />
+            <span className="text-sm text-green-700 font-medium">
+              Save ${savings.toFixed(2)} ({savingsPercent}% cheaper) compared to competitors
+            </span>
           </div>
         )}
         

@@ -17,6 +17,7 @@ import TokensPage from "./pages/TokensPage";
 import Login from "./pages/Login";
 import LeadQualifier from "./pages/LeadQualifier";
 import ResetPassword from "./pages/ResetPassword";
+import { Loader2 } from "lucide-react";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -26,7 +27,14 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useAuth();
   
   if (isLoading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gradient-to-r from-brand-teal/5 to-brand-coral/5">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 mx-auto animate-spin text-brand-teal" />
+          <p className="mt-4 text-lg text-brand-navy">Loading your account...</p>
+        </div>
+      </div>
+    );
   }
   
   if (!user) {
