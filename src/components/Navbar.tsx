@@ -30,13 +30,13 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Menu, Store, Package, ShoppingCart, Ticket, FileText, User, LogOut, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile"; // Fixed import name
 
 const Navbar = () => {
   const { user, signOut, isVendor } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const isMobile = useMobile();
+  const isMobile = useIsMobile(); // Using the correctly named hook
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
