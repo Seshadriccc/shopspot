@@ -1,4 +1,3 @@
-
 import { faker } from '@faker-js/faker';
 import type { Shop, ShopCategory, Offer, MenuItem, Comment } from './mockData';
 
@@ -107,6 +106,7 @@ const generateShop = (category: ShopCategory, index: number): Shop => {
   const offersCount = faker.number.int({ min: 0, max: 5 });
   const rating = faker.number.float({ min: 3.0, max: 5.0, fractionDigits: 1 });
   
+  // Correct the image category to match ShopCategory
   let imageCategory = category;
   if (category === 'streetFood') {
     imageCategory = 'street-food';
