@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import MenuItemCard from './MenuItemCard';
+import MenuItemCardWithCart from './MenuItemCardWithCart';
 import { MenuItem } from '@/utils/mockData';
 import { Utensils, Coffee, CakeSlice, Wine, Salad } from 'lucide-react';
 
@@ -17,12 +17,15 @@ const ShopMenu: React.FC<ShopMenuProps> = ({ menuItems }) => {
   const getCategoryIcon = (category: string) => {
     switch(category.toLowerCase()) {
       case 'appetizer':
+      case 'starters':
         return <Salad className="mr-2 h-4 w-4" />;
       case 'main course':
         return <Utensils className="mr-2 h-4 w-4" />;
       case 'dessert':
+      case 'desserts':
         return <CakeSlice className="mr-2 h-4 w-4" />;
       case 'beverage':
+      case 'breads':
         return <Coffee className="mr-2 h-4 w-4" />;
       default:
         return <Utensils className="mr-2 h-4 w-4" />;
@@ -85,7 +88,7 @@ const ShopMenu: React.FC<ShopMenuProps> = ({ menuItems }) => {
           <TabsContent key={category} value={category}>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {itemsByCategory[category].map(item => (
-                <MenuItemCard 
+                <MenuItemCardWithCart 
                   key={item.id} 
                   item={item} 
                   onAddComment={handleAddComment}

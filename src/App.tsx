@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BecomeVendor from "./pages/BecomeVendor";
@@ -15,8 +16,10 @@ import Products from "./pages/Products";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
 import TokensPage from "./pages/TokensPage";
 import Login from "./pages/Login";
-import LeadQualifier from "./pages/LeadQualifier";
 import ResetPassword from "./pages/ResetPassword";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import OrderSuccess from "./pages/OrderSuccess";
 import { Loader2 } from "lucide-react";
 
 // Create a client
@@ -48,57 +51,61 @@ const App = () => (
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              } />
-              <Route path="/become-vendor" element={
-                <ProtectedRoute>
-                  <BecomeVendor />
-                </ProtectedRoute>
-              } />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/orders" element={
-                <ProtectedRoute>
-                  <Orders />
-                </ProtectedRoute>
-              } />
-              <Route path="/products" element={
-                <ProtectedRoute>
-                  <Products />
-                </ProtectedRoute>
-              } />
-              <Route path="/subscription" element={
-                <ProtectedRoute>
-                  <SubscriptionPlans />
-                </ProtectedRoute>
-              } />
-              <Route path="/tokens" element={
-                <ProtectedRoute>
-                  <TokensPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/lead-qualifier" element={
-                <ProtectedRoute>
-                  <LeadQualifier />
-                </ProtectedRoute>
-              } />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <CartProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/" element={<Index />} />
+                <Route path="/become-vendor" element={
+                  <ProtectedRoute>
+                    <BecomeVendor />
+                  </ProtectedRoute>
+                } />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/orders" element={
+                  <ProtectedRoute>
+                    <Orders />
+                  </ProtectedRoute>
+                } />
+                <Route path="/products" element={
+                  <ProtectedRoute>
+                    <Products />
+                  </ProtectedRoute>
+                } />
+                <Route path="/subscription" element={
+                  <ProtectedRoute>
+                    <SubscriptionPlans />
+                  </ProtectedRoute>
+                } />
+                <Route path="/tokens" element={
+                  <ProtectedRoute>
+                    <TokensPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={
+                  <ProtectedRoute>
+                    <Checkout />
+                  </ProtectedRoute>
+                } />
+                <Route path="/order-success" element={
+                  <ProtectedRoute>
+                    <OrderSuccess />
+                  </ProtectedRoute>
+                } />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </CartProvider>
       </AuthProvider>
     </QueryClientProvider>
   </React.StrictMode>

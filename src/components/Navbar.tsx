@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import CartIcon from "@/components/CartIcon";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,7 +59,6 @@ const Navbar = () => {
   const navItems = [
     { label: "Discover", path: "/" },
     { label: "Tokens", path: "/tokens" },
-    { label: "Lead Qualifier", path: "/lead-qualifier" },
   ];
 
   // Vendor navigation items
@@ -133,188 +133,211 @@ const Navbar = () => {
           </NavigationMenu>
         )}
 
-        {/* User Menu (Desktop) */}
-        {user && !isMobile && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                <Avatar className="h-9 w-9">
-                  <AvatarFallback className="bg-brand-teal text-white">
-                    {getUserInitials()}
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{user.email}</p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {isVendor ? "Vendor Account" : "Customer Account"}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate("/tokens")}>
-                <Ticket className="mr-2 h-4 w-4" />
-                <span>My Tokens</span>
-              </DropdownMenuItem>
-              {isVendor && (
-                <>
-                  <DropdownMenuItem onClick={() => navigate("/dashboard")}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>Dashboard</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/products")}>
-                    <Package className="mr-2 h-4 w-4" />
-                    <span>Products</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/orders")}>
-                    <ShoppingCart className="mr-2 h-4 w-4" />
-                    <span>Orders</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/subscription")}>
-                    <Ticket className="mr-2 h-4 w-4" />
-                    <span>Subscription</span>
-                  </DropdownMenuItem>
-                </>
-              )}
-              {!isVendor && (
-                <DropdownMenuItem onClick={() => navigate("/become-vendor")}>
-                  <Store className="mr-2 h-4 w-4" />
-                  <span>Become a Vendor</span>
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut}>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Sign out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-
-        {/* Mobile Menu */}
-        {isMobile && (
-          <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu />
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>ShopSpot</SheetTitle>
-              </SheetHeader>
-              <div className="py-4">
-                {user && (
-                  <div className="flex items-center mb-6 pb-4 border-b">
-                    <Avatar className="h-10 w-10 mr-3">
-                      <AvatarFallback className="bg-brand-teal text-white">
-                        {getUserInitials()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-medium">{user.email}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {isVendor ? "Vendor Account" : "Customer Account"}
-                      </p>
-                    </div>
+        {/* Cart and User Menu (Desktop) */}
+        <div className="flex items-center gap-2">
+          <CartIcon />
+          
+          {user && !isMobile && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Avatar className="h-9 w-9">
+                    <AvatarFallback className="bg-brand-teal text-white">
+                      {getUserInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user.email}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {isVendor ? "Vendor Account" : "Customer Account"}
+                    </p>
                   </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate("/tokens")}>
+                  <Ticket className="mr-2 h-4 w-4" />
+                  <span>My Tokens</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/cart")}>
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  <span>My Cart</span>
+                </DropdownMenuItem>
+                {isVendor && (
+                  <>
+                    <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                      <FileText className="mr-2 h-4 w-4" />
+                      <span>Dashboard</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/products")}>
+                      <Package className="mr-2 h-4 w-4" />
+                      <span>Products</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/orders")}>
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      <span>Orders</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/subscription")}>
+                      <Ticket className="mr-2 h-4 w-4" />
+                      <span>Subscription</span>
+                    </DropdownMenuItem>
+                  </>
                 )}
+                {!isVendor && (
+                  <DropdownMenuItem onClick={() => navigate("/become-vendor")}>
+                    <Store className="mr-2 h-4 w-4" />
+                    <span>Become a Vendor</span>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
-                <div className="space-y-3">
-                  {/* Main navigation */}
-                  {navItems.map((item) => (
+          {/* Mobile Menu */}
+          {isMobile && (
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>ShopSpot</SheetTitle>
+                </SheetHeader>
+                <div className="py-4">
+                  {user && (
+                    <div className="flex items-center mb-6 pb-4 border-b">
+                      <Avatar className="h-10 w-10 mr-3">
+                        <AvatarFallback className="bg-brand-teal text-white">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium">{user.email}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {isVendor ? "Vendor Account" : "Customer Account"}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
+                    {/* Main navigation */}
+                    {navItems.map((item) => (
+                      <Button
+                        key={item.path}
+                        variant="ghost"
+                        className={cn(
+                          "w-full justify-start",
+                          isActive(item.path) && "bg-accent text-accent-foreground"
+                        )}
+                        onClick={() => {
+                          navigate(item.path);
+                          setIsMenuOpen(false);
+                        }}
+                      >
+                        {item.label}
+                      </Button>
+                    ))}
+
                     <Button
-                      key={item.path}
                       variant="ghost"
                       className={cn(
                         "w-full justify-start",
-                        isActive(item.path) && "bg-accent text-accent-foreground"
+                        isActive("/cart") && "bg-accent text-accent-foreground"
                       )}
                       onClick={() => {
-                        navigate(item.path);
+                        navigate("/cart");
                         setIsMenuOpen(false);
                       }}
                     >
-                      {item.label}
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      My Cart
                     </Button>
-                  ))}
 
-                  {/* Vendor section */}
-                  {isVendor && (
-                    <>
-                      <div className="pt-2 pb-1">
-                        <p className="text-sm font-medium text-muted-foreground">Vendor</p>
-                      </div>
-                      {vendorItems.map((item) => (
-                        <Button
-                          key={item.path}
-                          variant="ghost"
-                          className={cn(
-                            "w-full justify-start",
-                            isActive(item.path) && "bg-accent text-accent-foreground"
-                          )}
-                          onClick={() => {
-                            navigate(item.path);
-                            setIsMenuOpen(false);
-                          }}
-                        >
-                          {item.icon}
-                          <span className="ml-2">{item.label}</span>
-                        </Button>
-                      ))}
-                    </>
-                  )}
+                    {/* Vendor section */}
+                    {isVendor && (
+                      <>
+                        <div className="pt-2 pb-1">
+                          <p className="text-sm font-medium text-muted-foreground">Vendor</p>
+                        </div>
+                        {vendorItems.map((item) => (
+                          <Button
+                            key={item.path}
+                            variant="ghost"
+                            className={cn(
+                              "w-full justify-start",
+                              isActive(item.path) && "bg-accent text-accent-foreground"
+                            )}
+                            onClick={() => {
+                              navigate(item.path);
+                              setIsMenuOpen(false);
+                            }}
+                          >
+                            {item.icon}
+                            <span className="ml-2">{item.label}</span>
+                          </Button>
+                        ))}
+                      </>
+                    )}
 
-                  {/* Become vendor button */}
-                  {!isVendor && user && (
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start"
-                      onClick={() => {
-                        navigate("/become-vendor");
-                        setIsMenuOpen(false);
-                      }}
-                    >
-                      <Store className="mr-2 h-4 w-4" />
-                      Become a Vendor
-                    </Button>
-                  )}
+                    {/* Become vendor button */}
+                    {!isVendor && user && (
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                        onClick={() => {
+                          navigate("/become-vendor");
+                          setIsMenuOpen(false);
+                        }}
+                      >
+                        <Store className="mr-2 h-4 w-4" />
+                        Become a Vendor
+                      </Button>
+                    )}
 
-                  {/* Sign out button */}
-                  {user && (
-                    <Button
-                      variant="destructive"
-                      className="w-full justify-start mt-4"
-                      onClick={() => {
-                        handleSignOut();
-                        setIsMenuOpen(false);
-                      }}
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sign out
-                    </Button>
-                  )}
+                    {/* Sign out button */}
+                    {user && (
+                      <Button
+                        variant="destructive"
+                        className="w-full justify-start mt-4"
+                        onClick={() => {
+                          handleSignOut();
+                          setIsMenuOpen(false);
+                        }}
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Sign out
+                      </Button>
+                    )}
 
-                  {/* Sign in button */}
-                  {!user && (
-                    <Button
-                      className="w-full"
-                      onClick={() => {
-                        navigate("/login");
-                        setIsMenuOpen(false);
-                      }}
-                    >
-                      Sign In
-                    </Button>
-                  )}
+                    {/* Sign in button */}
+                    {!user && (
+                      <Button
+                        className="w-full"
+                        onClick={() => {
+                          navigate("/login");
+                          setIsMenuOpen(false);
+                        }}
+                      >
+                        Sign In
+                      </Button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        )}
+              </SheetContent>
+            </Sheet>
+          )}
+        </div>
 
         {/* Mobile Sign In Button (when not logged in) */}
         {!user && isMobile && (
