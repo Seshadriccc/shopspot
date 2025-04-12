@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import SearchBar from "@/components/SearchBar";
@@ -10,13 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Star, Phone, Clock, ExternalLink, Ticket } from "lucide-react";
+import { MapPin, Star, Phone, Clock, ExternalLink, Ticket, ShoppingCart } from "lucide-react";
 import { mockShops, type Shop, type ShopCategory } from "@/utils/mockData";
 import { getCurrentLocation, formatDistance } from "@/utils/locationUtils";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import AuthModal from "@/components/AuthModal";
+import { useCart } from "@/contexts/CartContext";
 
 const Index = () => {
   const [shops, setShops] = useState<Shop[]>(mockShops);
@@ -30,6 +30,7 @@ const Index = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const getLocation = async () => {
@@ -57,7 +58,6 @@ const Index = () => {
   }, [toast]);
 
   useEffect(() => {
-    // Filter shops based on category and search term
     let filtered = [...shops];
     
     if (selectedCategory) {
@@ -78,7 +78,6 @@ const Index = () => {
       );
     }
     
-    // Sort by distance
     filtered.sort((a, b) => a.distance - b.distance);
     
     setFilteredShops(filtered);
@@ -122,6 +121,31 @@ const Index = () => {
     if (selectedShop) {
       setIsTokenDialogOpen(true);
     }
+  };
+
+  const handleAddOfferToCart = (offer, shop) => {
+    const cartItem = {
+      id: offer.id,
+      name: offer.title,
+      price: offer.discount > 0 
+        ? offer.originalPrice * (100 - offer.discount) / 100 
+        : offer.originalPrice,
+      description: offer.description,
+      image: shop.image,
+      category: "offer",
+      isVegetarian: false,
+      spicyLevel: 0,
+      averageRating: shop.rating,
+      ratingCount: 0,
+      comments: []
+    };
+    
+    addToCart(cartItem);
+    
+    toast({
+      title: "Added to cart",
+      description: `${offer.title} has been added to your cart`,
+    });
   };
 
   return (
@@ -186,7 +210,6 @@ const Index = () => {
         </section>
       </main>
       
-      {/* Shop Details Modal */}
       <Dialog open={!!selectedShop} onOpenChange={handleCloseShopDetails}>
         {selectedShop && (
           <DialogContent className="sm:max-w-[500px] overflow-auto max-h-[90vh]">
@@ -255,27 +278,74 @@ const Index = () => {
                           </div>
                           <h4 className="font-bold text-lg mb-1">{offer.title}</h4>
                           <p className="text-sm text-muted-foreground mb-2">{offer.description}</p>
-                          <p className="text-xs text-muted-foreground">Valid until: {new Date(offer.validUntil).toLocaleDateString()}</p>
+                          
+                          <div className="flex justify-between items-center">
+                            <div>
+                              {offer.originalPrice && (
+                                <div className="flex items-baseline gap-2">
+                                  {offer.discount > 0 ? (
+                                    <>
+                                      <span className="font-bold text-brand-teal">
+                                        ₹{(offer.originalPrice * (100 - offer.discount) / 100).toFixed(2)}
+                                      </span>
+                                      <span className="text-xs line-through text-muted-foreground">
+                                        ₹{offer.originalPrice.toFixed(2)}
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <span className="font-bold">₹{offer.originalPrice.toFixed(2)}</span>
+                                  )}
+                                </div>
+                              )}
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Valid until: {new Date(offer.validUntil).toLocaleDateString()}
+                              </p>
+                            </div>
+                            
+                            {offer.originalPrice && (
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="gap-1"
+                                onClick={() => handleAddOfferToCart(offer, selectedShop)}
+                              >
+                                <ShoppingCart className="h-4 w-4" />
+                                Add
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
                   
-                  {selectedShop.category === 'restaurant' || selectedShop.category === 'streetFood' ? (
-                    <Button 
-                      className="w-full bg-brand-coral hover:bg-brand-coral/90 mt-4"
-                      onClick={() => handleBookNow(selectedShop)}
-                    >
-                      Prebook Order
-                    </Button>
-                  ) : (
-                    <Button 
-                      className="w-full mt-4"
-                      onClick={handleCloseShopDetails}
-                    >
-                      Visit Shop
-                    </Button>
-                  )}
+                  <div className="flex gap-2 mt-6">
+                    {selectedShop.category === 'restaurant' || selectedShop.category === 'streetFood' ? (
+                      <>
+                        <Button 
+                          className="flex-1 bg-brand-coral hover:bg-brand-coral/90"
+                          onClick={() => handleBookNow(selectedShop)}
+                        >
+                          Prebook Order
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="flex-1 gap-2"
+                          onClick={() => navigate('/cart')}
+                        >
+                          <ShoppingCart className="h-4 w-4" />
+                          View Cart
+                        </Button>
+                      </>
+                    ) : (
+                      <Button 
+                        className="w-full"
+                        onClick={handleCloseShopDetails}
+                      >
+                        Visit Shop
+                      </Button>
+                    )}
+                  </div>
                 </TabsContent>
                 
                 <TabsContent value="tokens" className="pt-4">
@@ -331,16 +401,12 @@ const Index = () => {
         )}
       </Dialog>
       
-      {/* Token Request Dialog */}
-      {selectedShop && (
-        <TokenRequestDialog 
-          isOpen={isTokenDialogOpen} 
-          onClose={() => setIsTokenDialogOpen(false)} 
-          shop={selectedShop}
-        />
-      )}
+      <TokenRequestDialog 
+        isOpen={isTokenDialogOpen} 
+        onClose={() => setIsTokenDialogOpen(false)} 
+        shop={selectedShop}
+      />
       
-      {/* Auth Modal */}
       <AuthModal 
         isOpen={isAuthModalOpen} 
         onClose={() => setIsAuthModalOpen(false)} 

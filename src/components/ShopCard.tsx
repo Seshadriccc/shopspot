@@ -1,5 +1,5 @@
 
-import { Star, MapPin, Clock, Tag, Percent, Utensils } from "lucide-react";
+import { Star, MapPin, Clock, Tag, Percent, Utensils, ShoppingCart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import OfferBadge from "./OfferBadge";
@@ -7,6 +7,8 @@ import { formatDistance } from "@/utils/locationUtils";
 import type { Shop } from "@/utils/mockData";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/contexts/CartContext";
 
 interface ShopCardProps {
   shop: Shop;
@@ -19,6 +21,7 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
   const { name, category, image, rating, distance, offers, openingHours, menuItems } = shop;
   const navigate = useNavigate();
   const [imageError, setImageError] = useState(false);
+  const { addToCart } = useCart();
 
   // Get highest discount for the badge
   const highestDiscount = offers.length > 0 
@@ -61,6 +64,30 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
     }
   };
 
+  // Add to cart handler - if it's a menu item from a restaurant or street food place
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    
+    if (displayOffer && hasPrice) {
+      // Create a cart item from the offer
+      const offerItem = {
+        id: displayOffer.id,
+        name: displayOffer.title,
+        price: discountedPrice || displayOffer.originalPrice,
+        description: displayOffer.description,
+        image: shop.image,
+        category: "offer",
+        isVegetarian: false, // Default
+        spicyLevel: 0, // Default
+        averageRating: shop.rating,
+        ratingCount: 0,
+        comments: []
+      };
+      
+      addToCart(offerItem);
+    }
+  };
+
   return (
     <Card 
       className="overflow-hidden transition-transform duration-200 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
@@ -95,19 +122,32 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
         </div>
         
         {hasPrice && (
-          <div className="flex items-center gap-2 text-sm mb-3">
-            <Tag size={14} className="text-brand-teal" />
-            {highestDiscount > 0 ? (
-              <div className="flex items-baseline gap-1">
-                <span className="font-bold text-brand-teal">
-                  ${discountedPrice.toFixed(2)}
-                </span>
-                <span className="text-xs line-through text-muted-foreground">
-                  ${displayOffer.originalPrice.toFixed(2)}
-                </span>
-              </div>
-            ) : (
-              <span className="font-bold">${displayOffer.originalPrice.toFixed(2)}</span>
+          <div className="flex items-center justify-between text-sm mb-3">
+            <div className="flex items-center gap-2">
+              <Tag size={14} className="text-brand-teal" />
+              {highestDiscount > 0 ? (
+                <div className="flex items-baseline gap-1">
+                  <span className="font-bold text-brand-teal">
+                    ₹{discountedPrice.toFixed(2)}
+                  </span>
+                  <span className="text-xs line-through text-muted-foreground">
+                    ₹{displayOffer.originalPrice.toFixed(2)}
+                  </span>
+                </div>
+              ) : (
+                <span className="font-bold">₹{displayOffer.originalPrice.toFixed(2)}</span>
+              )}
+            </div>
+            
+            {hasPrice && (category === 'restaurant' || category === 'streetFood') && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleAddToCart}
+                className="p-0 h-8 w-8"
+              >
+                <ShoppingCart size={16} className="text-brand-teal" />
+              </Button>
             )}
           </div>
         )}
@@ -116,7 +156,7 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
           <div className="mb-3 p-2 bg-green-50 rounded-md flex items-center gap-2">
             <Percent size={14} className="text-green-600" />
             <span className="text-sm text-green-700 font-medium">
-              Save ${savings.toFixed(2)} ({savingsPercent}% cheaper) compared to competitors
+              Save ₹{savings.toFixed(2)} ({savingsPercent}% cheaper) compared to competitors
             </span>
           </div>
         )}
