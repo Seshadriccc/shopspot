@@ -107,10 +107,7 @@ const generateShop = (category: ShopCategory, index: number): Shop => {
   const rating = faker.number.float({ min: 3.0, max: 5.0, fractionDigits: 1 });
   
   // Correct the image category to match ShopCategory
-  let imageCategory = category;
-  if (category === 'streetFood') {
-    imageCategory = 'street-food';
-  }
+  const imageCategory = category === 'streetFood' ? 'street-food' : category;
   
   return {
     id: faker.string.uuid(),
