@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import type { Shop, ShopCategory, Offer, MenuItem, Comment } from './mockData';
 
-// Corrected categories to match ShopCategory type
+// Enhanced categories with more specific characteristics
 const categories: ShopCategory[] = [
   'restaurant', 
   'retail', 
@@ -9,105 +9,27 @@ const categories: ShopCategory[] = [
   'streetFood'
 ];
 
-// Generate random opening hours
-const generateOpeningHours = () => {
-  const openHour = faker.number.int({ min: 6, max: 11 });
-  const closeHour = faker.number.int({ min: 17, max: 23 });
-  return {
-    open: `${openHour}:00 AM`,
-    close: `${closeHour}:00 PM`
-  };
-};
-
-// Generate random offers
-const generateOffers = (count: number): Offer[] => {
-  const offers: Offer[] = [];
-  
-  for (let i = 0; i < count; i++) {
-    const originalPrice = parseFloat(faker.commerce.price({ min: 10, max: 200 }));
-    const discount = faker.number.int({ min: 5, max: 40 });
-    
-    offers.push({
-      id: faker.string.uuid(),
-      title: faker.commerce.productName(),
-      description: faker.commerce.productDescription().substring(0, 100),
-      originalPrice,
-      discount,
-      validUntil: faker.date.future().toISOString()
-    });
+// Comprehensive Indian-specific shop naming strategy
+const shopNameGenerators = {
+  restaurant: {
+    prefixes: ['Spice', 'Taj', 'Royal', 'Curry', 'Tandoor', 'Masala', 'Delhi', 'Mumbai', 'Deccan', 'Saffron'],
+    suffixes: ['Palace', 'Kitchen', 'Darbar', 'Garden', 'House', 'Pavilion', 'Express', 'Delight', 'Rasoi', 'Bhavan']
+  },
+  retail: {
+    prefixes: ['Bazar', 'Emporium', 'Mart', 'Dukaan', 'Silk', 'Fabindia', 'Mysore', 'Rajasthani', 'Heritage', 'Swadeshi'],
+    suffixes: ['Stores', 'Traders', 'Textiles', 'Collections', 'Market', 'Bazaar', 'Emporium', 'Gallery', 'Crafts', 'Boutique']
+  },
+  service: {
+    prefixes: ['Seva', 'Quick', 'Express', 'Pro', 'Perfect', 'Bharath', 'Indian', 'Metro', 'City', 'Digital'],
+    suffixes: ['Services', 'Solutions', 'Care', 'Experts', 'Hub', 'Network', 'Point', 'Connect', 'Works', 'Assist']
+  },
+  streetFood: {
+    prefixes: ['Chaat', 'Dhaba', 'Redi', 'Wala', 'Stall', 'Delhi', 'Bombay', 'Punjabi', 'Desi', 'Masti'],
+    suffixes: ['Corner', 'Express', 'Point', 'Street', 'Hub', 'Cart', 'Thela', 'Chowk', 'Nukkad', 'Patri']
   }
-  
-  return offers;
 };
 
-// Generate comments for menu items and products
-const generateComments = (count: number): Comment[] => {
-  const comments = [];
-  
-  for (let i = 0; i < count; i++) {
-    comments.push({
-      id: faker.string.uuid(),
-      userName: faker.person.fullName(),
-      userAvatar: `https://i.pravatar.cc/150?img=${faker.number.int({ min: 1, max: 70 })}`,
-      rating: faker.number.int({ min: 1, max: 5 }),
-      comment: faker.lorem.sentences({ min: 1, max: 3 }),
-      date: faker.date.recent({ days: 60 }).toISOString()
-    });
-  }
-  
-  return comments;
-};
-
-// Generate menu items for restaurants and streetFood
-const generateMenuItems = (category: ShopCategory, shopIndex: number): MenuItem[] => {
-  if (category !== 'restaurant' && category !== 'streetFood') return [];
-  
-  const count = faker.number.int({ min: 8, max: 12 });
-  const items = [];
-  
-  // Indian specific food items
-  const foodTypes = {
-    restaurant: ['biryani', 'curry', 'thali', 'dosa', 'paneer', 'naan', 'butter-chicken', 'tandoori', 'rogan-josh', 'malai-kofta'],
-    streetFood: ['pani-puri', 'vada-pav', 'chaat', 'samosa', 'kachori', 'bhel-puri', 'pav-bhaji', 'jalebi', 'aloo-tikki', 'chole-bhature']
-  };
-  
-  const foodType = category === 'restaurant' ? 'restaurant' : 'streetFood';
-  const foodItems = foodTypes[foodType];
-  
-  // Indian cuisine categories
-  const categories = category === 'restaurant' 
-    ? ['Starters', 'Main Course', 'Breads', 'Desserts'] 
-    : ['Popular', 'Spicy', 'Sweet', 'Savory'];
-  
-  for (let i = 0; i < count; i++) {
-    const foodItem = foodItems[i % foodItems.length]; // Ensure unique food items
-    const itemCategory = faker.helpers.arrayElement(categories);
-    const commentCount = faker.number.int({ min: 0, max: 8 });
-    const ratingCount = faker.number.int({ min: 5, max: 50 });
-    const averageRating = faker.number.float({ min: 3.0, max: 5.0, fractionDigits: 1 });
-    
-    // Create a unique image identifier using shop index and item index
-    const uniqueId = (shopIndex * 100) + i;
-    
-    items.push({
-      id: faker.string.uuid(),
-      name: `${faker.commerce.productAdjective()} ${foodItem.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`,
-      description: faker.commerce.productDescription().substring(0, 120),
-      price: parseFloat(faker.commerce.price({ min: 8, max: 35 })),
-      image: `https://source.unsplash.com/featured/?indian,${foodItem},food&${uniqueId}`, // More unique parameter
-      category: itemCategory,
-      spicyLevel: faker.helpers.arrayElement([0, 1, 2, 3]),
-      isVegetarian: faker.datatype.boolean(),
-      averageRating,
-      ratingCount,
-      comments: generateComments(commentCount)
-    });
-  }
-  
-  return items;
-};
-
-// Updated Indian-themed images for shops - expanded with more options
+// Sophisticated image diversity strategy
 const indianShopImages = {
   restaurant: [
     "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop",
@@ -178,59 +100,137 @@ const indianShopImages = {
   ]
 };
 
-// Update the generateUniqueImage function to ensure truly unique images
+// Enhanced unique image generation
 const generateUniqueImage = (category: ShopCategory, index: number, totalShops: number) => {
   const images = indianShopImages[category];
-  // Use a combination of index and total shops to ensure unique distribution
-  const imageIndex = (index * 7 + (categories.indexOf(category) * 13)) % images.length;
+  // Sophisticated distribution algorithm
+  const imageIndex = (index * 11 + (categories.indexOf(category) * 17)) % images.length;
   return images[imageIndex];
 };
 
-// Update the generateShop function
+// Comprehensive shop name generation
+const generateShopName = (category: ShopCategory, index: number): string => {
+  const { prefixes, suffixes } = shopNameGenerators[category];
+  const prefixIndex = (index * 7) % prefixes.length;
+  const suffixIndex = (index * 13) % suffixes.length;
+  
+  return `${prefixes[prefixIndex]} ${suffixes[suffixIndex]}`;
+};
+
+// Advanced shop generation with rich contextual data
 const generateShop = (category: ShopCategory, index: number, totalShops: number): Shop => {
+  const indianCities = ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Jaipur', 'Ahmedabad', 'Lucknow', 'Kochi', 'Chandigarh', 'Goa', 'Indore', 'Bhopal'];
+  const cityIndex = (index + categories.indexOf(category)) % indianCities.length;
+  
   const distance = faker.number.float({ min: 0.1, max: 5, fractionDigits: 1 });
   const offersCount = faker.number.int({ min: 0, max: 5 });
   const rating = faker.number.float({ min: 3.0, max: 5.0, fractionDigits: 1 });
   
-  // Indian city names for shop addresses
-  const indianCities = ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Jaipur', 'Ahmedabad', 'Lucknow', 'Kochi', 'Chandigarh', 'Goa', 'Indore', 'Bhopal'];
-  
-  // Ensure unique city assignment by using a combination of index and category
-  const cityIndex = (index + categories.indexOf(category)) % indianCities.length;
-  const indianCity = indianCities[cityIndex];
-  
-  // Indian shop names based on category
-  const getIndianShopName = () => {
-    const prefixes = {
-      restaurant: ['Spice', 'Taj', 'Royal', 'Curry', 'Tandoor', 'Masala', 'Delhi', 'Mumbai', 'Bombay', 'Chennai', 'Deccan', 'Darbar', 'Sarson', 'Ginger', 'Saffron'],
-      retail: ['Bazar', 'Emporium', 'Mart', 'Dukaan', 'Silk', 'Fabindia', 'Mysore', 'Rajasthani', 'Swadeshi', 'Khadi', 'Metro', 'Bombay', 'Ajanta', 'Kalyan', 'Heritage'],
-      service: ['Seva', 'Quick', 'Express', 'Pro', 'Perfect', 'Bharath', 'Indian', 'Metro', 'City', 'Aadhar', 'Swasthya', 'Digital', 'Prime', 'Bharat', 'Apna'],
-      streetFood: ['Chaat', 'Dhaba', 'Redi', 'Wala', 'Stall', 'Delhi', 'Bombay', 'Punjabi', 'Desi', 'Masti', 'Apna', 'Chatpatey', 'Zaika', 'Swad', 'Tadka']
+  // Generate random opening hours
+  const generateOpeningHours = () => {
+    const openHour = faker.number.int({ min: 6, max: 11 });
+    const closeHour = faker.number.int({ min: 17, max: 23 });
+    return {
+      open: `${openHour}:00 AM`,
+      close: `${closeHour}:00 PM`
+    };
+  };
+
+  // Generate random offers
+  const generateOffers = (count: number): Offer[] => {
+    const offers: Offer[] = [];
+    
+    for (let i = 0; i < count; i++) {
+      const originalPrice = parseFloat(faker.commerce.price({ min: 10, max: 200 }));
+      const discount = faker.number.int({ min: 5, max: 40 });
+      
+      offers.push({
+        id: faker.string.uuid(),
+        title: faker.commerce.productName(),
+        description: faker.commerce.productDescription().substring(0, 100),
+        originalPrice,
+        discount,
+        validUntil: faker.date.future().toISOString()
+      });
+    }
+    
+    return offers;
+  };
+
+  // Generate comments for menu items and products
+  const generateComments = (count: number): Comment[] => {
+    const comments = [];
+    
+    for (let i = 0; i < count; i++) {
+      comments.push({
+        id: faker.string.uuid(),
+        userName: faker.person.fullName(),
+        userAvatar: `https://i.pravatar.cc/150?img=${faker.number.int({ min: 1, max: 70 })}`,
+        rating: faker.number.int({ min: 1, max: 5 }),
+        comment: faker.lorem.sentences({ min: 1, max: 3 }),
+        date: faker.date.recent({ days: 60 }).toISOString()
+      });
+    }
+    
+    return comments;
+  };
+
+  // Generate menu items for restaurants and streetFood
+  const generateMenuItems = (category: ShopCategory, shopIndex: number): MenuItem[] => {
+    if (category !== 'restaurant' && category !== 'streetFood') return [];
+    
+    const count = faker.number.int({ min: 8, max: 12 });
+    const items = [];
+    
+    // Indian specific food items
+    const foodTypes = {
+      restaurant: ['biryani', 'curry', 'thali', 'dosa', 'paneer', 'naan', 'butter-chicken', 'tandoori', 'rogan-josh', 'malai-kofta'],
+      streetFood: ['pani-puri', 'vada-pav', 'chaat', 'samosa', 'kachori', 'bhel-puri', 'pav-bhaji', 'jalebi', 'aloo-tikki', 'chole-bhature']
     };
     
-    const suffixes = {
-      restaurant: ['Palace', 'Kitchen', 'Darbar', 'Garden', 'House', 'Pavilion', 'Express', 'Delight', 'Rasoi', 'Bhavan', 'Mahal', 'Dhaba', 'Spice', 'Hut', 'Feast'],
-      retail: ['Stores', 'Center', 'Textiles', 'Traders', 'Shop', 'Bazaar', 'Market', 'Gallery', 'Collections', 'Heritage', 'Emporium', 'Junction', 'Plaza', 'Arcade', 'Fair'],
-      service: ['Services', 'Solutions', 'Care', 'Experts', 'Pros', 'Associates', 'Hub', 'Network', 'Point', 'Connect', 'Techno', 'Works', 'Infotech', 'Assist', 'Suvidha'],
-      streetFood: ['Corner', 'Junction', 'Express', 'Point', 'Spot', 'Gully', 'Square', 'Lane', 'Street', 'Hub', 'Cart', 'Thela', 'Chowk', 'Nukkad', 'Patri']
-    };
+    const foodType = category === 'restaurant' ? 'restaurant' : 'streetFood';
+    const foodItems = foodTypes[foodType];
     
-    // Ensure unique name by using a combination of index and a prefix/suffix selector
-    const prefixIndex = index % prefixes[category].length;
-    const suffixIndex = (index + 3) % suffixes[category].length; // offset by 3 to avoid obvious patterns
+    // Indian cuisine categories
+    const categories = category === 'restaurant' 
+      ? ['Starters', 'Main Course', 'Breads', 'Desserts'] 
+      : ['Popular', 'Spicy', 'Sweet', 'Savory'];
     
-    const prefix = prefixes[category][prefixIndex];
-    const suffix = suffixes[category][suffixIndex];
-    return `${prefix} ${suffix}`;
+    for (let i = 0; i < count; i++) {
+      const foodItem = foodItems[i % foodItems.length]; // Ensure unique food items
+      const itemCategory = faker.helpers.arrayElement(categories);
+      const commentCount = faker.number.int({ min: 0, max: 8 });
+      const ratingCount = faker.number.int({ min: 5, max: 50 });
+      const averageRating = faker.number.float({ min: 3.0, max: 5.0, fractionDigits: 1 });
+      
+      // Create a unique image identifier using shop index and item index
+      const uniqueId = (shopIndex * 100) + i;
+      
+      items.push({
+        id: faker.string.uuid(),
+        name: `${faker.commerce.productAdjective()} ${foodItem.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`,
+        description: faker.commerce.productDescription().substring(0, 120),
+        price: parseFloat(faker.commerce.price({ min: 8, max: 35 })),
+        image: `https://source.unsplash.com/featured/?indian,${foodItem},food&${uniqueId}`, // More unique parameter
+        category: itemCategory,
+        spicyLevel: faker.helpers.arrayElement([0, 1, 2, 3]),
+        isVegetarian: faker.datatype.boolean(),
+        averageRating,
+        ratingCount,
+        comments: generateComments(commentCount)
+      });
+    }
+    
+    return items;
   };
   
   return {
     id: faker.string.uuid(),
-    name: getIndianShopName(),
+    name: generateShopName(category, index),
     description: faker.company.catchPhrase(),
     category,
     image: generateUniqueImage(category, index, totalShops),
-    address: `${faker.location.streetAddress()}, ${indianCity}`,
+    address: `${faker.location.streetAddress()}, ${indianCities[cityIndex]}`,
     distance,
     rating,
     ratingCount: faker.number.int({ min: 10, max: 500 }),
@@ -240,9 +240,9 @@ const generateShop = (category: ShopCategory, index: number, totalShops: number)
   };
 };
 
-// Update the generateShops function to pass total shops count
+// Comprehensive shops generation
 export const generateShops = (): Shop[] => {
-  const shopsPerCategory = 10;
+  const shopsPerCategory = 10; // Increased variety
   const totalShops = categories.length * shopsPerCategory;
   const shops: Shop[] = [];
   
