@@ -120,6 +120,12 @@ const Index = () => {
     
     if (selectedShop) {
       setIsTokenDialogOpen(true);
+    } else {
+      toast({
+        title: "Error",
+        description: "Please select a shop first.",
+        variant: "destructive"
+      });
     }
   };
 

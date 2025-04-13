@@ -54,9 +54,9 @@ const TokensPage = () => {
           id: item.id,
           vendor_id: item.vendor_id,
           token_count: item.token_count,
-          shop_name: item.vendors.shop_name,
-          category: item.vendors.category,
-          logo_url: item.vendors.logo_url
+          shop_name: item.vendors?.shop_name || 'Unknown Shop',
+          category: item.vendors?.category || 'Other',
+          logo_url: item.vendors?.logo_url
         }));
         
         setTokens(formattedTokens);

@@ -11,7 +11,7 @@ import { Shop } from '@/utils/mockData';
 interface TokenRequestDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  shop: Shop;
+  shop: Shop | null;
 }
 
 const TokenRequestDialog = ({ isOpen, onClose, shop }: TokenRequestDialogProps) => {
@@ -19,11 +19,29 @@ const TokenRequestDialog = ({ isOpen, onClose, shop }: TokenRequestDialogProps) 
   const { toast } = useToast();
   const [isRequesting, setIsRequesting] = useState(false);
 
+  // If shop is null, close the dialog and return null
+  if (!shop && isOpen) {
+    console.warn("TokenRequestDialog opened with null shop prop");
+    onClose();
+    return null;
+  }
+
   const handleRequestToken = async () => {
     if (!user) {
       toast({
         title: "Authentication Required",
         description: "Please sign in to request tokens",
+        variant: "destructive"
+      });
+      onClose();
+      return;
+    }
+
+    // Extra safety check - should not happen due to the early return above
+    if (!shop) {
+      toast({
+        title: "Error",
+        description: "Shop information is missing",
         variant: "destructive"
       });
       onClose();
@@ -98,6 +116,11 @@ const TokenRequestDialog = ({ isOpen, onClose, shop }: TokenRequestDialogProps) 
       onClose();
     }
   };
+
+  // Return null if shop is not available
+  if (!shop) {
+    return null;
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
