@@ -1,4 +1,3 @@
-
 import { faker } from '@faker-js/faker';
 import type { Shop, ShopCategory, Offer, MenuItem, Comment } from './mockData';
 
@@ -139,9 +138,8 @@ const indianShopImages = {
     "https://images.unsplash.com/photo-1599896345024-d01b143c8eba?w=800&h=600&fit=crop",
     "https://images.unsplash.com/photo-1596262583767-bbd226af4eab?w=800&h=600&fit=crop",
     "https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1567401533-6e6a62bd8b49?w=800&h=600&fit=crop",
     "https://images.unsplash.com/photo-1567103472667-6898f3a79cf2?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?w=800&h=600&fit=crop",
     "https://images.unsplash.com/photo-1555529771-7888783a18d3?w=800&h=600&fit=crop"
   ],
   service: [
@@ -180,8 +178,16 @@ const indianShopImages = {
   ]
 };
 
-// Generate a random shop
-const generateShop = (category: ShopCategory, index: number): Shop => {
+// Update the generateUniqueImage function to ensure truly unique images
+const generateUniqueImage = (category: ShopCategory, index: number, totalShops: number) => {
+  const images = indianShopImages[category];
+  // Use a combination of index and total shops to ensure unique distribution
+  const imageIndex = (index * 7 + (categories.indexOf(category) * 13)) % images.length;
+  return images[imageIndex];
+};
+
+// Update the generateShop function
+const generateShop = (category: ShopCategory, index: number, totalShops: number): Shop => {
   const distance = faker.number.float({ min: 0.1, max: 5, fractionDigits: 1 });
   const offersCount = faker.number.int({ min: 0, max: 5 });
   const rating = faker.number.float({ min: 3.0, max: 5.0, fractionDigits: 1 });
@@ -218,20 +224,12 @@ const generateShop = (category: ShopCategory, index: number): Shop => {
     return `${prefix} ${suffix}`;
   };
   
-  // Generate a truly unique image by using a deterministic but varied approach
-  const generateUniqueImage = () => {
-    // This ensures that each shop gets a unique image
-    const totalImages = indianShopImages[category].length;
-    const imageIndex = (index + (categories.indexOf(category) * 7)) % totalImages; // multiply by a prime number for better distribution
-    return indianShopImages[category][imageIndex];
-  };
-  
   return {
     id: faker.string.uuid(),
     name: getIndianShopName(),
     description: faker.company.catchPhrase(),
     category,
-    image: generateUniqueImage(),
+    image: generateUniqueImage(category, index, totalShops),
     address: `${faker.location.streetAddress()}, ${indianCity}`,
     distance,
     rating,
@@ -242,19 +240,17 @@ const generateShop = (category: ShopCategory, index: number): Shop => {
   };
 };
 
-// Generate shops for each category
+// Update the generateShops function to pass total shops count
 export const generateShops = (): Shop[] => {
+  const shopsPerCategory = 10;
+  const totalShops = categories.length * shopsPerCategory;
   const shops: Shop[] = [];
   
-  // Generate 10 shops for each category
   categories.forEach(category => {
-    for (let i = 0; i < 10; i++) {
-      shops.push(generateShop(category, i));
+    for (let i = 0; i < shopsPerCategory; i++) {
+      shops.push(generateShop(category, i, totalShops));
     }
   });
   
-  // Sort by distance
-  shops.sort((a, b) => a.distance - b.distance);
-  
-  return shops;
+  return shops.sort((a, b) => a.distance - b.distance);
 };
