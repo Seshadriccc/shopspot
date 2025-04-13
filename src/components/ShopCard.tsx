@@ -48,20 +48,51 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
   // Check if shop has menu items
   const hasMenu = menuItems && menuItems.length > 0;
   
-  // Extract city from address
-  const city = address ? address.split(',').pop()?.trim() : '';
+  // Extract city from address with more reliable parsing
+  const city = address ? 
+    address.split(',').pop()?.trim() || 
+    address.split(' ').slice(-1)[0].trim() : 
+    '';
 
-  // Get fallback image based on category
+  // Get fallback image based on category and shop name
   const getFallbackImage = () => {
+    // Use shop name to create variation in fallback images
+    const nameHash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const variation = nameHash % 5; // Create 5 variations per category
+    
     switch(category) {
       case 'restaurant':
-        return "https://images.unsplash.com/photo-1514222709107-a180c68d72b4?w=800&h=600&fit=crop";
+        return [
+          "https://images.unsplash.com/photo-1514222709107-a180c68d72b4?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1574653853027-5382a3d23a7d?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1602023039928-7af5a2f000fa?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=800&h=600&fit=crop"
+        ][variation];
       case 'retail':
-        return "https://images.unsplash.com/photo-1605651202774-7d573f2174f5?w=800&h=600&fit=crop";
+        return [
+          "https://images.unsplash.com/photo-1605651202774-7d573f2174f5?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1601565580844-adbf80c50383?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1582530239827-95150649530b?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1608303588026-884cbd42f3eb?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1601751818941-571144562ff8?w=800&h=600&fit=crop"
+        ][variation];
       case 'service':
-        return "https://images.unsplash.com/photo-1613987549117-13c4781ac9d2?w=800&h=600&fit=crop";
+        return [
+          "https://images.unsplash.com/photo-1613987549117-13c4781ac9d2?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1622279488720-cf540e293b4a?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1533142266415-ac591a4deae9?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1536650135175-9b3cd4f86884?w=800&h=600&fit=crop"
+        ][variation];
       case 'streetFood':
-        return "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=600&fit=crop";
+        return [
+          "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1621241441637-ea2d3f59db22?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1589778655375-3c70785cd832?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1529688530647-93a6e1916f5f?w=800&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1506354666786-959d6d497f1a?w=800&h=600&fit=crop"
+        ][variation];
       default:
         return "https://images.unsplash.com/photo-1583668496597-b0ec8097ce36?w=800&h=600&fit=crop";
     }
@@ -131,19 +162,21 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
         </div>
         
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-          <MapPin size={14} className="text-brand-teal" />
-          <span>{formatDistance(distance)} away {city && `• ${city}`}</span>
+          <MapPin size={14} className="text-brand-teal flex-shrink-0" />
+          <span className="truncate">
+            {formatDistance(distance)} away {city && `• ${city}`}
+          </span>
         </div>
         
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-          <Clock size={14} />
+          <Clock size={14} className="flex-shrink-0" />
           <span>{openingHours.open} - {openingHours.close}</span>
         </div>
         
         {hasPrice && (
           <div className="flex items-center justify-between text-sm mb-3">
             <div className="flex items-center gap-2">
-              <Tag size={14} className="text-brand-teal" />
+              <Tag size={14} className="text-brand-teal flex-shrink-0" />
               {highestDiscount > 0 ? (
                 <div className="flex items-baseline gap-1">
                   <span className="font-bold text-brand-teal">
@@ -173,7 +206,7 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
         
         {showPriceComparison && hasPrice && savings !== null && savings > 0 && (
           <div className="mb-3 p-2 bg-green-50 rounded-md flex items-center gap-2">
-            <Percent size={14} className="text-green-600" />
+            <Percent size={14} className="text-green-600 flex-shrink-0" />
             <span className="text-sm text-green-700 font-medium">
               Save ₹{savings.toFixed(2)} ({savingsPercent}% cheaper) compared to competitors
             </span>
