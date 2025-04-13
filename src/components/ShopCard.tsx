@@ -112,7 +112,7 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
         </div>
         
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-          <MapPin size={14} />
+          <MapPin size={14} className="text-brand-teal" />
           <span>{formatDistance(distance)} away</span>
         </div>
         
