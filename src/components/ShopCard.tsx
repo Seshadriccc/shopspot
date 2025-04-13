@@ -18,7 +18,7 @@ interface ShopCardProps {
 }
 
 const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice = null }: ShopCardProps) => {
-  const { name, category, image, rating, distance, offers, openingHours, menuItems } = shop;
+  const { name, category, image, rating, distance, offers, openingHours, menuItems, address } = shop;
   const navigate = useNavigate();
   const [imageError, setImageError] = useState(false);
   const { addToCart } = useCart();
@@ -47,20 +47,23 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
 
   // Check if shop has menu items
   const hasMenu = menuItems && menuItems.length > 0;
+  
+  // Extract city from address
+  const city = address ? address.split(',').pop()?.trim() : '';
 
   // Get fallback image based on category
   const getFallbackImage = () => {
     switch(category) {
       case 'restaurant':
-        return "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop";
+        return "https://images.unsplash.com/photo-1514222709107-a180c68d72b4?w=800&h=600&fit=crop";
       case 'retail':
-        return "https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?w=800&h=600&fit=crop";
+        return "https://images.unsplash.com/photo-1605651202774-7d573f2174f5?w=800&h=600&fit=crop";
       case 'service':
-        return "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=800&h=600&fit=crop";
+        return "https://images.unsplash.com/photo-1613987549117-13c4781ac9d2?w=800&h=600&fit=crop";
       case 'streetFood':
-        return "https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?w=800&h=600&fit=crop";
+        return "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=600&fit=crop";
       default:
-        return "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&h=600&fit=crop";
+        return "https://images.unsplash.com/photo-1583668496597-b0ec8097ce36?w=800&h=600&fit=crop";
     }
   };
 
@@ -85,6 +88,22 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
       };
       
       addToCart(offerItem);
+    }
+  };
+
+  // Set up category styled badges
+  const getCategoryStyle = () => {
+    switch(category) {
+      case 'restaurant':
+        return "bg-amber-50 text-amber-700 border-amber-200";
+      case 'retail':
+        return "bg-blue-50 text-blue-700 border-blue-200";
+      case 'service':
+        return "bg-purple-50 text-purple-700 border-purple-200";
+      case 'streetFood':
+        return "bg-green-50 text-green-700 border-green-200";
+      default:
+        return "bg-muted/50";
     }
   };
 
@@ -113,7 +132,7 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
         
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
           <MapPin size={14} className="text-brand-teal" />
-          <span>{formatDistance(distance)} away</span>
+          <span>{formatDistance(distance)} away {city && `• ${city}`}</span>
         </div>
         
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
@@ -162,7 +181,7 @@ const ShopCard = ({ shop, onClick, showPriceComparison = false, competitorPrice 
         )}
         
         <div className="flex flex-wrap gap-2">
-          <Badge variant="outline" className="bg-muted/50">
+          <Badge variant="outline" className={getCategoryStyle()}>
             {category.charAt(0).toUpperCase() + category.slice(1)}
           </Badge>
           {offers.length > 0 && (

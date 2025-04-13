@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -58,17 +57,30 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onAddComment }) => {
     );
   };
 
-  // Get fallback image based on category
+  // Get fallback image based on food type
   const getFallbackImage = () => {
-    const category = item.category.toLowerCase();
-    if (category.includes('dessert')) {
-      return "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=500&h=350&fit=crop";
-    } else if (category.includes('beverage')) {
-      return "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=500&h=350&fit=crop";
-    } else if (category.includes('appetizer')) {
-      return "https://images.unsplash.com/photo-1541795795328-f073b763494e?w=500&h=350&fit=crop";
+    const name = item.name.toLowerCase();
+    
+    if (name.includes('biryani') || name.includes('rice')) {
+      return "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&h=350&fit=crop";
+    } else if (name.includes('curry') || name.includes('masala')) {
+      return "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&h=350&fit=crop";
+    } else if (name.includes('dosa') || name.includes('idli')) {
+      return "https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=500&h=350&fit=crop";
+    } else if (name.includes('paneer')) {
+      return "https://images.unsplash.com/photo-1567188040759-fb8a551187f3?w=500&h=350&fit=crop";
+    } else if (name.includes('naan') || name.includes('roti')) {
+      return "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=500&h=350&fit=crop";
+    } else if (name.includes('samosa') || name.includes('pakora')) {
+      return "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&h=350&fit=crop";
+    } else if (name.includes('chaat') || name.includes('puri')) {
+      return "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=500&h=350&fit=crop";
+    } else if (name.includes('sweet') || name.includes('dessert') || name.includes('jalebi')) {
+      return "https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=500&h=350&fit=crop";
+    } else if (item.category.toLowerCase().includes('dessert')) {
+      return "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=500&h=350&fit=crop";
     } else {
-      return "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&h=350&fit=crop";
+      return "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&h=350&fit=crop";
     }
   };
 
@@ -103,7 +115,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onAddComment }) => {
         </p>
         
         <div className="flex justify-between items-center mt-auto">
-          <span className="font-bold text-lg">${item.price.toFixed(2)}</span>
+          <span className="font-bold text-lg">₹{item.price.toFixed(2)}</span>
           
           <div className="flex items-center">
             <Star className="fill-amber-400 stroke-amber-400 h-4 w-4 mr-1" />
