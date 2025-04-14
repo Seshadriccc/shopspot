@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import SearchBar from "@/components/SearchBar";
@@ -9,9 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Star, Phone, Clock, ExternalLink, Ticket, ShoppingCart } from "lucide-react";
+import { MapPin, Star, Phone, Clock, ExternalLink, Ticket, ShoppingCart, AlertTriangle } from "lucide-react";
 import { mockShops, type Shop, type ShopCategory } from "@/utils/mockData";
-import { getCurrentLocation, formatDistance } from "@/utils/locationUtils";
+import { getCurrentLocation, formatDistance, isUsingDefaultLocation } from "@/utils/locationUtils";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +28,7 @@ const Index = () => {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | undefined>(undefined);
   const [isTokenDialogOpen, setIsTokenDialogOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isLocationLoading, setIsLocationLoading] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -34,16 +36,26 @@ const Index = () => {
 
   useEffect(() => {
     const getLocation = async () => {
+      setIsLocationLoading(true);
       try {
         const position = await getCurrentLocation();
         setUserLocation({
           lat: position.coords.latitude,
           lng: position.coords.longitude
         });
-        toast({
-          title: "Location Found",
-          description: "Using your current location to find nearby shops.",
-        });
+        
+        if (isUsingDefaultLocation()) {
+          toast({
+            title: "Using Default Location",
+            description: "We're using a default location in Bangalore. Enable location access for better results.",
+            variant: "warning",
+          });
+        } else {
+          toast({
+            title: "Location Found",
+            description: "Using your current location to find nearby shops.",
+          });
+        }
       } catch (error) {
         console.error("Error getting location:", error);
         toast({
@@ -51,6 +63,8 @@ const Index = () => {
           description: "Couldn't access your location. Using default location instead.",
           variant: "destructive",
         });
+      } finally {
+        setIsLocationLoading(false);
       }
     };
 
@@ -164,6 +178,22 @@ const Index = () => {
           <p className="text-muted-foreground text-center mb-6">
             Find the best offers from local businesses near you
           </p>
+          
+          {isLocationLoading ? (
+            <div className="flex justify-center mb-6">
+              <div className="bg-muted/20 py-2 px-4 rounded-full flex items-center gap-2">
+                <div className="animate-spin h-4 w-4 border-2 border-brand-teal border-t-transparent rounded-full"></div>
+                <p className="text-sm text-muted-foreground">Locating you...</p>
+              </div>
+            </div>
+          ) : isUsingDefaultLocation() && (
+            <div className="max-w-3xl mx-auto mb-6 bg-amber-50 border border-amber-200 p-3 rounded-lg flex items-center gap-2">
+              <AlertTriangle size={18} className="text-amber-500 flex-shrink-0" />
+              <p className="text-sm text-amber-700">
+                Using default location in Bangalore. Enable location access in your browser for personalized results.
+              </p>
+            </div>
+          )}
           
           <div className="max-w-3xl mx-auto mb-8">
             <SearchBar onSearch={handleSearch} />

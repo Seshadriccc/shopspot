@@ -1,9 +1,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Compass, Map as MapIcon, Navigation, MapPin } from "lucide-react";
+import { Compass, Map as MapIcon, Navigation, MapPin, RefreshCw } from "lucide-react";
 import type { Shop } from '@/utils/mockData';
-import { getAddressFromCoordinates } from '@/utils/locationUtils';
+import { getAddressFromCoordinates, clearLocationCache, isUsingDefaultLocation } from '@/utils/locationUtils';
 import { useToast } from "@/hooks/use-toast";
 
 interface MapProps {
@@ -17,6 +17,8 @@ const Map = ({ shops, userLocation, onShopSelect }: MapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [currentAddress, setCurrentAddress] = useState<string | null>(null);
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
+  const [isRefreshingLocation, setIsRefreshingLocation] = useState(false);
   const { toast } = useToast();
 
   // Get current address based on coordinates
@@ -24,10 +26,14 @@ const Map = ({ shops, userLocation, onShopSelect }: MapProps) => {
     if (userLocation) {
       const fetchAddress = async () => {
         try {
+          setIsLoadingAddress(true);
           const address = await getAddressFromCoordinates(userLocation.lat, userLocation.lng);
           setCurrentAddress(address);
         } catch (error) {
           console.error("Error fetching address:", error);
+          setCurrentAddress("Unable to retrieve address");
+        } finally {
+          setIsLoadingAddress(false);
         }
       };
       
@@ -231,6 +237,16 @@ const Map = ({ shops, userLocation, onShopSelect }: MapProps) => {
 
   const handleRefreshLocation = async () => {
     try {
+      setIsRefreshingLocation(true);
+      
+      // Clear location cache first
+      clearLocationCache();
+      
+      toast({
+        title: "Refreshing Location",
+        description: "Requesting your current location...",
+      });
+      
       // Request location access again
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -247,11 +263,29 @@ const Map = ({ shops, userLocation, onShopSelect }: MapProps) => {
           },
           (error) => {
             console.error("Error getting location:", error);
+            let errorMessage = "Location access failed.";
+            
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                errorMessage = "Location access was denied. Please check your browser settings and permissions.";
+                break;
+              case error.POSITION_UNAVAILABLE:
+                errorMessage = "Location information is unavailable. Please try again later.";
+                break;
+              case error.TIMEOUT:
+                errorMessage = "Location request timed out. Please check your connection and try again.";
+                break;
+              default:
+                errorMessage = "An unknown error occurred while accessing your location.";
+            }
+            
             toast({
               title: "Location Error",
-              description: "Couldn't access your location. Please check your browser settings.",
+              description: errorMessage,
               variant: "destructive",
             });
+            
+            setIsRefreshingLocation(false);
           },
           { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
@@ -261,6 +295,7 @@ const Map = ({ shops, userLocation, onShopSelect }: MapProps) => {
           description: "Geolocation is not supported by your browser.",
           variant: "destructive",
         });
+        setIsRefreshingLocation(false);
       }
     } catch (error) {
       console.error("Error refreshing location:", error);
@@ -269,6 +304,7 @@ const Map = ({ shops, userLocation, onShopSelect }: MapProps) => {
         description: "Something went wrong when trying to update your location.",
         variant: "destructive",
       });
+      setIsRefreshingLocation(false);
     }
   };
 
@@ -282,8 +318,13 @@ const Map = ({ shops, userLocation, onShopSelect }: MapProps) => {
             size="sm"
             className="gap-2"
             onClick={handleRefreshLocation}
+            disabled={isRefreshingLocation}
           >
-            <Compass size={16} />
+            {isRefreshingLocation ? (
+              <RefreshCw size={16} className="animate-spin" />
+            ) : (
+              <Compass size={16} />
+            )}
             Refresh Location
           </Button>
           <Button 
@@ -299,9 +340,18 @@ const Map = ({ shops, userLocation, onShopSelect }: MapProps) => {
       </div>
       
       {currentAddress && (
-        <div className="bg-muted/30 p-3 rounded-lg mb-4 flex items-center gap-2">
-          <MapPin size={16} className="text-brand-teal flex-shrink-0" />
-          <p className="text-sm text-muted-foreground truncate">{currentAddress}</p>
+        <div className={`p-3 rounded-lg mb-4 flex items-center gap-2 ${isUsingDefaultLocation() ? 'bg-amber-50 border border-amber-200' : 'bg-muted/30'}`}>
+          <MapPin size={16} className={isUsingDefaultLocation() ? "text-amber-500 flex-shrink-0" : "text-brand-teal flex-shrink-0"} />
+          <div className="flex-1">
+            <p className={`text-sm ${isUsingDefaultLocation() ? 'text-amber-700' : 'text-muted-foreground'} truncate`}>
+              {isLoadingAddress ? "Loading your location..." : currentAddress}
+            </p>
+            {isUsingDefaultLocation() && (
+              <p className="text-xs text-amber-600 mt-1">
+                Using default location. Click "Refresh Location" to use your actual location.
+              </p>
+            )}
+          </div>
         </div>
       )}
       
